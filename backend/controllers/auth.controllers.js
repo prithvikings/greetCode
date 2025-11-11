@@ -6,6 +6,7 @@ import { ENV } from "../config/env.js";
 import jwt from "jsonwebtoken";
 import { redisClient } from "../config/redis.js";
 
+
 export const registerUser = async (req, res) => {
   const { firstname, lastname, email, password, role } = req.body;
 
@@ -22,6 +23,7 @@ export const registerUser = async (req, res) => {
 
     //hash password
     const hashpassword = await bcrypt.hash(password, 10);
+    req.body.role = "user"; //force role to user
 
     const newUser = User({
       firstname,
@@ -33,7 +35,13 @@ export const registerUser = async (req, res) => {
     newUser.save();
 
     // jwt token generation can be added here
-    const token = generateToken(newUser._id);
+    const token = jwt.sign(
+      { _id: newUser._id, emailId: email, role: "user" },
+      ENV.JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
 
     // Set cookie
     res.cookie("token", token, {
@@ -75,7 +83,8 @@ export const loginUser = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = generateToken(user._id);
+    const token = jwt.sign({ _id: user._id, emailId: email, role:user.role},ENV.JWT_SECRET,{expiresIn: "30d",}
+    );
 
     // Set cookie
     res.cookie("token", token, {
@@ -116,14 +125,13 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-export const LogoutUser =async (req, res) => {
+export const LogoutUser = async (req, res) => {
   try {
-    const {token} = req.cookies;
-    const payload=jwt.decode(token);
-    const expiry=payload.exp;
+    const { token } = req.cookies;
+    const payload = jwt.decode(token);
+    const expiry = payload.exp;
     if (token) {
-      
-      await redisClient.set(`token:${token}`,"Blocked");
+      await redisClient.set(`token:${token}`, "Blocked");
       await redisClient.expireAt(`token:${token}`, expiry);
 
       res.clearCookie("token", {
@@ -132,12 +140,68 @@ export const LogoutUser =async (req, res) => {
         sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
       });
 
-      
       res.status(200).json({ message: "Logout successful" });
     }
   } catch (error) {
     res.status(500).json({
       message: "Error logging out",
+      error: error.message,
+    });
+  }
+};
+
+export const registerAdmin = async (req, res) => {
+  const { firstname, lastname, email, password, role } = req.body;
+
+  try {
+    // Check for existing admin
+    const existingAdmin = await User.findOne({ email });
+    if (existingAdmin) {
+      return res
+        .status(400)
+        .json({ message: "User with this email or username already exists" });
+    }
+
+    validateRegistrationData(firstname, lastname, email, password, role);
+
+    //hash password
+    const hashpassword = await bcrypt.hash(password, 10);
+    req.body.role = "admin"; 
+
+    const newAdmin = User({
+      firstname,
+      lastname,
+      email,
+      password: hashpassword,
+      role,
+    });
+    newAdmin.save();
+
+    // jwt token generation can be added here
+    const token = jwt.sign(
+      { _id: newAdmin._id, emailId: email, role: "admin" },
+      ENV.JWT_SECRET,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    // Set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: ENV.NODE_ENV === "production" ? true : false, // false for localhost
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax", // ✅ allow cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      message: "Admin registered successfully",
+      admin: newAdmin,
+      token, // optional – remove if you only want to rely on cookies
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error registering user",
       error: error.message,
     });
   }
