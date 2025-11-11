@@ -7,4 +7,4 @@ export const userRoutes = express.Router();
 userRoutes.post("/register",registerUser);
 userRoutes.post("/login",loginUser);
 userRoutes.get("/profile",checkAuth ,getUserProfile);
-userRoutes.post("/logout",LogoutUser);
+userRoutes.post("/logout",checkAuth,LogoutUser);
