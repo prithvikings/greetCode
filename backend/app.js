@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {ENV} from './config/env.js';
 import {userRoutes} from './routes/user.route.js';
+import { problemRouter } from './routes/problem.route.js';
 
 
 const app = express();
@@ -22,5 +23,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth/users', userRoutes);
+app.use("/api/auth/problem/",problemRouter);
 
 export default app;

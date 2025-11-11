@@ -11,4 +11,7 @@ export const ENV={
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_HOST: process.env.REDIS_HOST,
     NODE_ENV: process.env.NODE_ENV || 'development',
+    rapidapi_key: process.env.rapidapi_key,
+    rapidapi_host: process.env.rapidapi_host,
+    rapidapi_url: process.env.rapidapi_url
 }
