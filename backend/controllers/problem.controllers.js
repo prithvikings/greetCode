@@ -1,9 +1,6 @@
-import {
-  getLanguageId,
-  submitbatch,
-  submittoken,
-} from "../utils/languageUtils.js";
+import {getLanguageId,submitbatch,submittoken} from "../utils/languageUtils.js";
 import { Problem } from "../models/problems.models.js";
+import { User } from "../models/user.models.js";
 
 
 // Get all problems ✅
@@ -212,16 +209,27 @@ const deleteProblem = async (req, res) => {
   }
 };
 
-// Get solved problems by user
+// Get solved problems by user ✅
 const solvedProblemsByUser = async (req, res) => {
   // Logic to get solved problems by user
+  const userId=req.userId;
+  try{
+    const user=await User.findById(userId);
+    if(!user){
+        return res.status(404).json({message:"User not found"});
+    }
+    const solvedProblems=user.problemSolved; // solvedProblems is an array of problem IDs
+    const problems=await Problem.findById(solvedProblems).select('-hiddenTestCases'); // Fetch problem details for each solved problem ID
+    res.status(200).json({
+      message:"Solved problems fetched successfully",
+      numberofProblems:solvedProblems.length,
+      problems:problems
+    })
+
+  }catch(err){
+    console.error("Error getting solved problems by user:",err);
+    res.status(500).json({message:"Internal server error"});
+  }
 };
 
-export {
-  getAllProblems,
-  getProblemById,
-  createProblem,
-  updateProblem,
-  deleteProblem,
-  solvedProblemsByUser,
-};
+export {getAllProblems,getProblemById,createProblem,updateProblem,deleteProblem,solvedProblemsByUser};

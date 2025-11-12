@@ -5,6 +5,7 @@ import {
   submitbatch,
   submittoken,
 } from "../utils/languageUtils.js";
+import { User } from "../models/user.models.js";
 
 export const submitController = async (req, res) => {
   // Logic to handle code submission
@@ -80,6 +81,12 @@ export const submitController = async (req, res) => {
     submittedResult.memory = memoryUsed;
     submittedResult.errorMessage = errormsg;
     await submittedResult.save();
+
+    const user=await User.findById(userId);
+    if(!user.problemSolved.includes(problemId)){
+      user.problemSolved.push(problemId);
+      await user.save();
+    }
 
     res.status(200).json({
       message: "Code submitted successfully",
