@@ -97,3 +97,49 @@ export const submitController = async (req, res) => {
     res.status(500).json({ message: "Error submitting code", error });
   }
 };
+
+
+export const runController = async (req, res) => {
+  // Logic to handle code run (without saving submission)
+   try {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    const problemId = req.params.id;
+    if (!problemId)
+      return res.status(400).json({ message: "Problem ID is required" });
+    const { code, language } = req.body;
+    if (!code || !language)
+      return res
+        .status(400)
+        .json({ message: "Code and language are required" });
+
+    // fetch problem details from DB
+    const problem = await Problem.findById(problemId);
+    if (!problem) return res.status(404).json({ message: "Problem not found" });
+
+    // Here you would typically add logic to actually run the code against test cases
+    const languageId = getLanguageId(language);
+
+    const submission = problem.visibleTestCases.map((testcases) => ({
+      source_code: code,
+      language_id: languageId,
+      stdin: testcases.input,
+      expected_output: testcases.output,
+    }));
+
+    const submitResult = await submitbatch(submission);
+
+    const result = submitResult.map((value) => value.token);
+    const testResult = await submittoken(result);
+
+  
+
+    res.status(200).json({
+      message: "Code run successfully",
+      results: testResult,
+    });
+  } catch (error) {
+    console.error("Run Error:", error);
+    res.status(500).json({ message: "Error running code", error });
+  }
+};

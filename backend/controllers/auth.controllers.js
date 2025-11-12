@@ -5,8 +5,10 @@ import { generateToken } from "../config/token.js";
 import { ENV } from "../config/env.js";
 import jwt from "jsonwebtoken";
 import { redisClient } from "../config/redis.js";
+import { Submission } from "../models/submission.models.js";
 
 
+// User Registration ✅
 export const registerUser = async (req, res) => {
   const { firstname, lastname, email, password, role } = req.body;
 
@@ -64,6 +66,8 @@ export const registerUser = async (req, res) => {
   }
 };
 
+
+// User Login ✅
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -83,7 +87,10 @@ export const loginUser = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ _id: user._id, emailId: email, role:user.role},ENV.JWT_SECRET,{expiresIn: "30d",}
+    const token = jwt.sign(
+      { _id: user._id, emailId: email, role: user.role },
+      ENV.JWT_SECRET,
+      { expiresIn: "30d" }
     );
 
     // Set cookie
@@ -105,6 +112,8 @@ export const loginUser = async (req, res) => {
   }
 };
 
+
+// Get User Profile ✅
 export const getUserProfile = async (req, res) => {
   try {
     const id = req.userId;
@@ -125,6 +134,8 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
+
+// User Logout ✅
 export const LogoutUser = async (req, res) => {
   try {
     const { token } = req.cookies;
@@ -150,6 +161,8 @@ export const LogoutUser = async (req, res) => {
   }
 };
 
+
+// Admin Registration ✅
 export const registerAdmin = async (req, res) => {
   const { firstname, lastname, email, password, role } = req.body;
 
@@ -166,7 +179,7 @@ export const registerAdmin = async (req, res) => {
 
     //hash password
     const hashpassword = await bcrypt.hash(password, 10);
-    req.body.role = "admin"; 
+    req.body.role = "admin";
 
     const newAdmin = User({
       firstname,
@@ -202,6 +215,31 @@ export const registerAdmin = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error registering user",
+      error: error.message,
+    });
+  }
+};
+
+
+// Delete User ✅
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await Submission.deleteMany({ userId: userId });
+
+    res.status(200).json({
+      message: "User deleted successfully",
+      deletedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting user",
       error: error.message,
     });
   }

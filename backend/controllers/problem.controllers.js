@@ -214,17 +214,20 @@ const solvedProblemsByUser = async (req, res) => {
   // Logic to get solved problems by user
   const userId=req.userId;
   try{
-    const user=await User.findById(userId);
+    const user=await User.findById(userId).populate({
+      path:'problemSolved',
+      select:'_id title difficulty tags'
+    });
+
     if(!user){
         return res.status(404).json({message:"User not found"});
     }
-    const solvedProblems=user.problemSolved; // solvedProblems is an array of problem IDs
-    const problems=await Problem.findById(solvedProblems).select('-hiddenTestCases'); // Fetch problem details for each solved problem ID
+    
     res.status(200).json({
       message:"Solved problems fetched successfully",
-      numberofProblems:solvedProblems.length,
-      problems:problems
-    })
+      solvedProblems:user.problemSolved,
+      noofproblemsSolved:user.problemSolved.length
+    });
 
   }catch(err){
     console.error("Error getting solved problems by user:",err);
