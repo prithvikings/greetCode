@@ -9,8 +9,8 @@ import { Problem } from "../models/problems.models.js";
 // Get all problems ✅
 const getAllProblems = async (req, res) => {
 
-  const problems = await Problem.find({});
-  if(!problems){
+  const problems = await Problem.find({}).select('-hiddenTestCases');
+  if(problems.length===0){
     return  res.status(404).json({message:"No problems found"});
   }
   res.status(200).json(problems);
@@ -25,7 +25,7 @@ const getProblemById = async (req, res) => {
             return res.status(400).json({message:"Problem id is required"});
         }
 
-        const problem=await Problem.findById(id);
+        const problem=await Problem.findById(id).select('-hiddenTestCases');
         if(!problem){
             return res.status(404).json({message:"Problem not found"});
         }
@@ -114,7 +114,7 @@ const createProblem = async (req, res) => {
   }
 };
 
-// Update problem 
+// Update problem ✅
 const updateProblem = async (req, res) => {
   const { id } = req.params;
 
