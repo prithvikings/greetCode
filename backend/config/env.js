@@ -13,5 +13,6 @@ export const ENV={
     NODE_ENV: process.env.NODE_ENV || 'development',
     rapidapi_key: process.env.rapidapi_key,
     rapidapi_host: process.env.rapidapi_host,
-    rapidapi_url: process.env.rapidapi_url
+    rapidapi_url: process.env.rapidapi_url,
+    rapidapi_submission_token_url: process.env.rapidapi_submission_token_url
 }
