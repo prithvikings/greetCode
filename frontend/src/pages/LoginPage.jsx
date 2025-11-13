@@ -1,9 +1,19 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod'; // or 'zod/v4'
+
+
+const loginschema = z.object({
+  email: z.string().email({ message: "Invalid email address" }).nonempty({ message: "Email is required" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters long" }).nonempty({ message: "Password is required" }),
+});
+
+
 const LoginPage = () => {
 
-  const {register,handleSubmit,formState: { errors },} = useForm();
+  const {register,handleSubmit,formState: { errors },} = useForm({resolver: zodResolver(loginschema)});
 
   const onSubmit = (data) => {
     console.log(data);
@@ -19,14 +29,14 @@ const LoginPage = () => {
 
 
         <label className="label">Email</label>
-        <input type="email" className="input outline-none  w-full"  placeholder="Email" {...register("email", { required: "Email is required"})}/>
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+        <input type="email" className="input outline-none  w-full"  placeholder="Email" {...register("email")}/>
+        {errors.email && <p className="text-error font-medium tracking-wide">{errors.email.message}</p>}
 
 
         <label className="label">Password</label>
-        <input type="password" className="input outline-none  w-full" placeholder="Password" {...register("password", {required: "Password is required"})}/>
-        {errors.password && <p className="text-red-500">{errors.password.message}</p>}
-        <p className='text-center font-normal text-sm text-base-content'>if you don't have account <Link to="/signup" className="text-secondary underline">Create Now </Link></p>
+        <input type="password" className="input outline-none  w-full" placeholder="Password" {...register("password")}/>
+        {errors.password && <p className="text-error font-medium tracking-wide">{errors.password.message}</p>}
+        <p className='text-center font-normal text-sm text-base-content'>if you don't have account <Link to="/signup" className="text-secondary font-semibold ">Create Now </Link></p>
         <button type="submit" className="btn btn-secondary mt-4 shadow-xl">Login</button>
       </fieldset>
     </form>
