@@ -1,6 +1,7 @@
 import {getLanguageId,submitbatch,submittoken} from "../utils/languageUtils.js";
 import { Problem } from "../models/problems.models.js";
 import { User } from "../models/user.models.js";
+import { Submission } from "../models/submission.models.js";
 
 
 // Get all problems ✅
@@ -235,4 +236,26 @@ const solvedProblemsByUser = async (req, res) => {
   }
 };
 
-export {getAllProblems,getProblemById,createProblem,updateProblem,deleteProblem,solvedProblemsByUser};
+
+const submittedProblem=async(req,res)=>{
+  
+  try{
+    const userId=req.userId;
+  const problemId=req.params.pId;
+
+  const ans= await Submission.find({userId:userId,problemId:problemId});
+  if(ans.length===0){
+    return res.status(404).json({message:"No submissions found for this problem by the user"});
+  }
+  res.status(200).json({
+    message:"Submitted problems fetched successfully",
+    submissions:ans,
+    noofsubmissions:ans.length
+  });
+
+  }catch(err){
+    console.error("Error getting submitted problems by user:",err);
+    res.status(500).json({message:"Internal server error"});
+  }
+};
+export {getAllProblems,getProblemById,createProblem,updateProblem,deleteProblem,solvedProblemsByUser,submittedProblem};

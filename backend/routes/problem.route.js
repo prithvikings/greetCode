@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllProblems, getProblemById, createProblem, updateProblem, deleteProblem, solvedProblemsByUser } from '../controllers/problem.controllers.js';
+import { getAllProblems, getProblemById, createProblem, updateProblem, deleteProblem, solvedProblemsByUser,submittedProblem } from '../controllers/problem.controllers.js';
 import { checkAdmin } from '../middlewares/admin.middleware.js';
 import { checkAuth } from '../middlewares/auth.middleware.js';
 export const problemRouter = express.Router();
@@ -14,4 +14,4 @@ problemRouter.delete("/delete/:id",checkAdmin,deleteProblem);
 problemRouter.get("/getAllProblem",checkAuth ,getAllProblems);
 problemRouter.get("/getProblemById/:id",checkAuth ,getProblemById);
 problemRouter.get("/problemSolvedByUser",checkAuth ,solvedProblemsByUser);
-
+problemRouter.get("/submittedProblem/:pId",checkAuth ,submittedProblem);
