@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
     res.send('Hello from the backend!');
 });
 
-app.use('/api/auth/users', userRoutes);
+app.use('/api/auth/users/', userRoutes);
 app.use("/api/auth/problem/",problemRouter);
 app.use("/api/auth/problem/",submitRouter);
 

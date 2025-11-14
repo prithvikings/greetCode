@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     },
     lastname:{
         type: String,
-        required: true,
+        default: '',
     },
     email:{
         type: String,
@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Problem',
         }],
-        unique: true,
         default: [],
     },
     profilePicture:{

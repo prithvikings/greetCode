@@ -2,7 +2,7 @@ import validator from 'validator';
 
 export const validateRegistrationData = (data) => {
     
-    if (!data.firstname || !data.lastname || !data.email || !data.password) {
+    if (!data.name || !data.email || !data.password) {
         return { valid: false, message: 'All fields are required.' };
     }
 

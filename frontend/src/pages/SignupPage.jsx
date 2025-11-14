@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod'; // or 'zod/v4'
+import {useDispatch,useSelector} from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../authSlice';
 
 
 // Define the Zod schema for form validation
@@ -15,11 +18,22 @@ const signupschema = z.object({
 
 const SignupPage = () => {
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {isAuthenticated,loading} = useSelector((state) => state.auth);
+
   // Initialize the form with React Hook Form and Zod resolver
   const {register,handleSubmit,formState: { errors },} = useForm({resolver: zodResolver(signupschema),});
 
+
+  useEffect(()=>{
+    if(isAuthenticated){
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(registerUser(data));
   }
 
 
@@ -46,7 +60,9 @@ const SignupPage = () => {
 
         <p className='text-center font-normal text-sm text-base-content'>if you already have an account <Link to="/login" className="text-secondary font-semibold ">Login Now </Link></p>
 
-        <button type="submit" className="btn btn-secondary mt-4 shadow-xl">Signup</button>
+        <button
+        disabled={loading}
+        type="submit" className={`btn btn-secondary ${loading ? "loading":""} mt-4 shadow-xl`}>{loading? "Signing up...":"Sign Up"}</button>
       </fieldset>
     </form>
     

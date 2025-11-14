@@ -7,58 +7,55 @@ import jwt from "jsonwebtoken";
 import { redisClient } from "../config/redis.js";
 import { Submission } from "../models/submission.models.js";
 
-
 // User Registration ✅
 export const registerUser = async (req, res) => {
-  const { firstname, lastname, email, password, role } = req.body;
-
   try {
+    const { name, email, password } = req.body;
+
     // Check for existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "User with this email or username already exists" });
+        .json({ message: "User with this email already exists" });
     }
 
-    validateRegistrationData(firstname, lastname, email, password, role);
+    validateRegistrationData({ name, email, password });
 
-    //hash password
     const hashpassword = await bcrypt.hash(password, 10);
-    req.body.role = "user"; //force role to user
 
-    const newUser = User({
-      firstname,
-      lastname,
+    const newUser = new User({
+      firstname: name,
+      lastname:"",
       email,
       password: hashpassword,
-      role,
+      role: "user", // FORCE role
     });
-    newUser.save();
 
-    // jwt token generation can be added here
+    await newUser.save(); // IMPORTANT
     const token = jwt.sign(
       { _id: newUser._id, emailId: email, role: "user" },
       ENV.JWT_SECRET,
-      {
-        expiresIn: "30d",
-      }
+      { expiresIn: "30d" }
     );
 
-    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: ENV.NODE_ENV === "production" ? true : false, // false for localhost
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax", // ✅ allow cross-site cookies
+      secure: ENV.NODE_ENV === "production",
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
       message: "User registered successfully",
-      user: newUser,
-      token, // optional – remove if you only want to rely on cookies
+      user: {
+        _id: newUser._id,
+        firstname: newUser.firstname,
+        email: newUser.email,
+      },
     });
   } catch (error) {
+    console.error("REGISTER ERROR:", error);
     res.status(500).json({
       message: "Error registering user",
       error: error.message,
@@ -66,10 +63,10 @@ export const registerUser = async (req, res) => {
   }
 };
 
-
 // User Login ✅
 export const loginUser = async (req, res) => {
   try {
+
     const { email, password } = req.body;
     if (!email || !password) {
       return res
@@ -93,6 +90,13 @@ export const loginUser = async (req, res) => {
       { expiresIn: "30d" }
     );
 
+    const frontendResponseUser = {
+      _id: user._id,
+      firstname: user.firstname,
+      email: user.email,
+      role: user.role, 
+    };
+
     // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
@@ -102,16 +106,16 @@ export const loginUser = async (req, res) => {
     });
     res.status(200).json({
       message: "User logged in successfully",
-      user,
+      user: frontendResponseUser,
     });
   } catch (error) {
+
     res.status(500).json({
       message: "Error logging in user",
       error: error.message,
     });
   }
 };
-
 
 // Get User Profile ✅
 export const getUserProfile = async (req, res) => {
@@ -133,7 +137,6 @@ export const getUserProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // User Logout ✅
 export const LogoutUser = async (req, res) => {
@@ -161,65 +164,61 @@ export const LogoutUser = async (req, res) => {
   }
 };
 
-
 // Admin Registration ✅
 export const registerAdmin = async (req, res) => {
-  const { firstname, lastname, email, password, role } = req.body;
-
   try {
-    // Check for existing admin
+    const { name, email, password } = req.body;
+
+    // Check existing admin
     const existingAdmin = await User.findOne({ email });
     if (existingAdmin) {
-      return res
-        .status(400)
-        .json({ message: "User with this email or username already exists" });
+      return res.status(400).json({ message: "User with this email already exists" });
     }
 
-    validateRegistrationData(firstname, lastname, email, password, role);
+    validateRegistrationData({ name, email, password });
 
-    //hash password
     const hashpassword = await bcrypt.hash(password, 10);
-    req.body.role = "admin";
 
-    const newAdmin = User({
-      firstname,
-      lastname,
+    const newAdmin = new User({
+      firstname: name,
+      lastname: "",
       email,
       password: hashpassword,
-      role,
+      role: "admin",
     });
-    newAdmin.save();
 
-    // jwt token generation can be added here
+    await newAdmin.save();
+
     const token = jwt.sign(
       { _id: newAdmin._id, emailId: email, role: "admin" },
       ENV.JWT_SECRET,
-      {
-        expiresIn: "30d",
-      }
+      { expiresIn: "30d" }
     );
 
-    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: ENV.NODE_ENV === "production" ? true : false, // false for localhost
-      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax", // ✅ allow cross-site cookies
+      secure: ENV.NODE_ENV === "production",
+      sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
       message: "Admin registered successfully",
-      admin: newAdmin,
-      token, // optional – remove if you only want to rely on cookies
+      admin: {
+        _id: newAdmin._id,
+        firstname: newAdmin.firstname,
+        email: newAdmin.email,
+        role: newAdmin.role,
+      },
     });
   } catch (error) {
+    console.error("REGISTER ERROR:", error);
     res.status(500).json({
-      message: "Error registering user",
+      message: "Error registering admin",
       error: error.message,
     });
   }
 };
-
 
 // Delete User ✅
 export const deleteUser = async (req, res) => {
@@ -240,6 +239,30 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error deleting user",
+      error: error.message,
+    });
+  }
+};
+
+// Check Authentication ✅
+export const check = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId).select("-password");
+    const frontendResponseUser = {
+      _id: user._id,
+      firstname: user.firstname,
+      email: user.email,
+      role: user.role,
+    };
+
+    res.status(200).json({
+      message: "User is authenticated",
+      user: frontendResponseUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error checking authentication",
       error: error.message,
     });
   }
