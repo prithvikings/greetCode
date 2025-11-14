@@ -1,3 +1,6 @@
+import jwt from "jsonwebtoken";
+import { ENV } from "../config/env.js";
+import { redisClient } from "../config/redis.js";
 export const checkAdmin = async (req, res, next) => {
   try {
     const token =
@@ -8,34 +11,25 @@ export const checkAdmin = async (req, res, next) => {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    const isBlocked = await redisClient.exists(`token:${token}`);
-    if (isBlocked) {
-      return res.status(401).json({
-        message: "Token is blocked. Please login again.",
-      });
+    const isBlock = await redisClient.exists(`token:${token}`);
+    if (isBlock) {
+      return res
+        .status(401)
+        .json({ message: "Token is blocked. Please login again." });
     }
-
-    let decoded;
-    try {
-      decoded = jwt.verify(token, ENV.JWT_SECRET);
-    } catch (err) {
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
-
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
     if (!decoded?._id) {
-      return res.status(401).json({ message: "Invalid token payload" });
+      return res.status(401).json({ message: "Invalid token" });
     }
 
     if (decoded.role !== "admin") {
-      return res.status(403).json({ message: "Access denied. Admins only." });
+      throw new Error("Invalid token");
     }
 
     req.userId = decoded._id;
-    req.role = decoded.role;
-
     next();
   } catch (error) {
-    console.error("Admin auth error:", error);
-    return res.status(500).json({ message: "Server error in admin check" });
+    console.error("Auth error:", error);
+    return res.status(500).json({ message: error.message });
   }
 };

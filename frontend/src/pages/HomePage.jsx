@@ -14,6 +14,9 @@ function HomePage() {
     tag: "all",
     status: "all",
   });
+  console.log("User Role:", user);
+  
+  
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -73,6 +76,14 @@ if (filter.status === "solved") {
             CodePractice
           </NavLink>
         </div>
+        {/* Conditional Admin Link Rendering */}
+        {user?.role === "admin" && (
+          <div className="flex-none mr-4">
+            <NavLink to="/admin" className="btn btn-primary">
+              Admin Panel
+            </NavLink>
+          </div>
+        )}
         <div className="flex-none gap-4">
           <div className="dropdown dropdown-end">
             <div tabIndex={0} className="btn btn-ghost">

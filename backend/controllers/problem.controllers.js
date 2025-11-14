@@ -64,7 +64,8 @@ const createProblem = async (req, res) => {
   }
   try {
     for (const { Language, solutionCode } of referenceSolution) {
-      const languageId = getLanguageId(Language);
+      const normalizedLang = Language.toLowerCase().trim();
+      const languageId = getLanguageId(normalizedLang);
 
       const submission = visibleTestCases.map((testcases) => ({
         source_code: solutionCode,
@@ -141,7 +142,8 @@ const updateProblem = async (req, res) => {
     }
 
     for (const { Language, solutionCode } of referenceSolution) {
-      const languageId = getLanguageId(Language);
+      const normalizedLang = Language.toLowerCase().trim();
+      const languageId = getLanguageId(normalizedLang);
 
       const submission = visibleTestCases.map((testcases) => ({
         source_code: solutionCode,
