@@ -14,7 +14,6 @@ function HomePage() {
     tag: "all",
     status: "all",
   });
-  console.log("User Role:", user);
   
   
 

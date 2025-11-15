@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import axiosClient from "../utils/axiosClient";
+import AiChat from "../components/AiChat.jsx";
 
 const languageOptions = [
   { id: "javascript", label: "JavaScript" },
@@ -233,6 +234,15 @@ export default function ProblemPage() {
 
                 <button
                   className={`tab ${
+                    activeLeftTab === "Aichat" ? "tab-active" : ""
+                  }`}
+                  onClick={() => setActiveLeftTab("Aichat")}
+                >
+                  AiChat
+                </button>
+
+                <button
+                  className={`tab ${
                     activeLeftTab === "submissions" ? "tab-active" : ""
                   }`}
                   onClick={async () => {
@@ -251,6 +261,8 @@ export default function ProblemPage() {
                   Submissions
                 </button>
               </div>
+
+              {activeLeftTab === "Aichat" && <AiChat problem={problem} />}
 
               {activeLeftTab === "description" && (
                 <div

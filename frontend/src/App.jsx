@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import AdminCreate from "./components/AdminCreate";
 import AdminUpdate from "./components/AdminUpdate";
 import AdminDelete from "./components/AdminDelete";
+import AdminUpdateForm from "./components/AdminUpdateForm";
 
 const App = () => {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
@@ -66,6 +67,9 @@ const App = () => {
       <Route path="/admin/delete-problem" element={
         isAuthenticated && user?.role === "admin" ? <AdminDelete /> : <Navigate to="/" />
       } />
+      <Route path="/admin/update/:id" 
+        element={isAuthenticated && user?.role === "admin" ? <AdminUpdateForm /> : <Navigate to="/" />}
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

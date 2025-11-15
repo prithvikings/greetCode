@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FilePlus, Pencil, Trash2 } from "lucide-react";
 
 const Admin = () => {
@@ -33,7 +33,7 @@ const Admin = () => {
     <div className="min-h-screen bg-base-200 p-10">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold mb-8">Admin Panel</h1>
-        <button className="btn-primary btn" onClick={()=>navigate(-1)}>Go Back</button>
+        <NavLink to="/" className="btn-primary btn">Go Back</NavLink>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

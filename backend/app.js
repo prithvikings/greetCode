@@ -5,6 +5,7 @@ import {ENV} from './config/env.js';
 import {userRoutes} from './routes/user.route.js';
 import { problemRouter } from './routes/problem.route.js';
 import { submitRouter } from './routes/submit.route.js';
+import { aiRouter } from './routes/ai.routes.js';
 
 
 const app = express();
@@ -26,5 +27,6 @@ app.get('/', (req, res) => {
 app.use('/api/auth/users/', userRoutes);
 app.use("/api/auth/problem/",problemRouter);
 app.use("/api/auth/problem/",submitRouter);
+app.use("/api/auth/ai/",aiRouter);
 
 export default app;

@@ -141,54 +141,69 @@ const updateProblem = async (req, res) => {
       return res.status(404).json({ message: "Problem not found" });
     }
 
+    // Fallback to avoid crash if frontend sends nothing
+    const tests = visibleTestCases || [];
+
+    // Validate each reference solution
     for (const { Language, solutionCode } of referenceSolution) {
+
+      // ⛔ IMPORTANT FIX — skip empty reference solution
+      if (!solutionCode || solutionCode.trim() === "") continue;
+
       const normalizedLang = Language.toLowerCase().trim();
       const languageId = getLanguageId(normalizedLang);
 
-      const submission = visibleTestCases.map((testcases) => ({
+      const submission = tests.map((testcase) => ({
         source_code: solutionCode,
         language_id: languageId,
-        stdin: testcases.input,
-        expected_output: testcases.output,
+        stdin: testcase.input,
+        expected_output: testcase.output,
       }));
 
       if (submission.length === 0) {
-        return res
-          .status(400)
-          .json({ message: "No test cases created for submission" });
+        return res.status(400).json({
+          message: "No test cases created for submission"
+        });
       }
 
-      const submitResult = await submitbatch(submission); // this will return an array of token id now we have to send it to another api to get the result which will return the status of each submission
+      const submitResult = await submitbatch(submission);
 
-      const result = submitResult.map((value) => value.token);
-      // Now we have array of tokens we have to send it to another api to get the result
+      const tokens = submitResult.map((v) => v.token);
 
-      const testResult = await submittoken(result);
-      // testResult will contain the status of each submission
+      const testResult = await submittoken(tokens);
 
       for (const test of testResult) {
         if (test.status_id !== 3) {
-          // 3 means accepted
           return res.status(400).json({
-            message: `Reference solution failed for language ${Language}`,
+            message: `Reference solution failed for language ${Language}`
           });
         }
       }
     }
 
-    const updatedProblem = await Problem.findByIdAndUpdate(id,{ ...req.body },{ runValidators: true, new: true });
+    const updatedProblem = await Problem.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { runValidators: true, new: true }
+    );
 
     if (!updatedProblem) {
-      return res.status(404).json({ message: "Problem not found after update" });
+      return res.status(404).json({
+        message: "Problem not found after update",
+      });
     }
 
+    return res.status(200).json({
+      message: "Problem updated successfully",
+      updatedProblem,
+    });
 
-    res.status(200).json({ message: "Problem updated successfully" },updatedProblem);
   } catch (err) {
     console.error("Error updating problem:", err);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // Delete problem ✅
 const deleteProblem = async (req, res) => {
