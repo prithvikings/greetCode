@@ -52,7 +52,7 @@ const problemSchema = z.object({
 // Utility → normalize multiline but keep formatting
 const clean = (str) => str.replace(/\r/g, "");
 
-function AdminPage() {
+function AdminCreate() {
   const navigate = useNavigate();
 
   const {
@@ -114,6 +114,7 @@ function AdminPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Create New Problem</h1>
+      <button className="btn btn-secondary" onClick={() => navigate(-1)}>Go Back</button>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* BASIC INFO */}
@@ -261,4 +262,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default AdminCreate;

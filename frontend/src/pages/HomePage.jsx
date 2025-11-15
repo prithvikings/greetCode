@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../utils/axiosClient";
 import { logoutUser } from "../authSlice";
@@ -76,23 +76,21 @@ if (filter.status === "solved") {
             CodePractice
           </NavLink>
         </div>
-        {/* Conditional Admin Link Rendering */}
-        {user?.role === "admin" && (
-          <div className="flex-none mr-4">
-            <NavLink to="/admin" className="btn btn-primary">
-              Admin Panel
-            </NavLink>
-          </div>
-        )}
+        
         <div className="flex-none gap-4">
           <div className="dropdown dropdown-end">
             <div tabIndex={0} className="btn btn-ghost">
               {user?.firstname || "Guest"}
             </div>
-            <ul className="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-25 ">
+            <ul className="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-32 ">
               <li>
                 <button onClick={handleLogout}>Logout</button>
               </li>
+              {user?.role === "admin" && (
+                <li>
+                  <Link to="/admin">Admin Panel</Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -146,7 +144,7 @@ if (filter.status === "solved") {
             <div key={problem._id} className="card bg-base-100 shadow-xl">
               <div className="card-body">
                 <div className="flex items-center justify-between">
-                  <h2 className="card-title">{problem.title}</h2>
+                  <Link to={`/problem/${problem._id}`} className="card-title">{problem.title}</Link>
                   {solvedProblems.some((sp) => sp._id === problem._id) && (
                     <div className="badge badge-success gap-2">
                       <svg
