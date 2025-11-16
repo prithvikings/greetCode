@@ -13,6 +13,8 @@ import AdminCreate from "./components/AdminCreate";
 import AdminUpdate from "./components/AdminUpdate";
 import AdminDelete from "./components/AdminDelete";
 import AdminUpdateForm from "./components/AdminUpdateForm";
+import AdminVideo from "./components/AdminVideo";
+import UploadVideo from "./components/UploadVideo";
 
 const App = () => {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
@@ -70,6 +72,12 @@ const App = () => {
       <Route path="/admin/update/:id" 
         element={isAuthenticated && user?.role === "admin" ? <AdminUpdateForm /> : <Navigate to="/" />}
       />
+      <Route path="/admin/video-upload" element={
+        isAuthenticated && user?.role === "admin" ? <AdminVideo /> : <Navigate to="/" />
+      } />
+      <Route path="/admin/upload-video/:problemId" element={
+        isAuthenticated && user?.role === "admin" ? <UploadVideo /> : <Navigate to="/" />
+      } />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

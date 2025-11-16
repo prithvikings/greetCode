@@ -2,6 +2,7 @@ import {getLanguageId,submitbatch,submittoken} from "../utils/languageUtils.js";
 import { Problem } from "../models/problems.models.js";
 import { User } from "../models/user.models.js";
 import { Submission } from "../models/submission.models.js";
+import {Video} from "../models/video.models.js";
 
 
 // Get all problems ✅
@@ -16,25 +17,44 @@ const getAllProblems = async (req, res) => {
 
 // Get problem by ID ✅
 const getProblemById = async (req, res) => {
+  const { id } = req.params;
 
-    const { id } = req.params;
-    try{
-        if(!id){
-            return res.status(400).json({message:"Problem id is required"});
-        }
-
-        const problem=await Problem.findById(id).select('-hiddenTestCases');
-        if(!problem){
-            return res.status(404).json({message:"Problem not found"});
-        }
-
-        res.status(200).json(problem);
+  try {
+    if (!id) {
+      return res.status(400).json({ message: "Problem id is required" });
     }
-    catch(err){
-        console.error("Error getting problem by id:",err);
-        res.status(500).json({message:"Internal server error"});
+
+    // Fetch problem (without hidden test cases)
+    const problem = await Problem.findById(id).select("-hiddenTestCases");
+
+    if (!problem) {
+      return res.status(404).json({ message: "Problem not found" });
     }
+
+    // Convert mongoose document to plain object
+    const plainProblem = problem.toObject();
+
+    // Fetch video if exists
+    const video = await Video.findOne({ problemId: id });
+
+    if (video) {
+      return res.status(200).json({
+        ...plainProblem,
+        secureUrl: video.secureUrl,
+        thumbnailUrl: video.thumbnailUrl,
+        duration: video.duration,
+      });
+    }
+
+    // No video found → return problem only
+    return res.status(200).json(plainProblem);
+
+  } catch (err) {
+    console.error("Error getting problem by id:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
+
 
 // Create a new problem ✅
 const createProblem = async (req, res) => {

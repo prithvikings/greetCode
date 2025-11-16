@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FilePlus, Pencil, Trash2 } from "lucide-react";
+import { FilePlus, Pencil, Trash2, Video } from "lucide-react";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -26,6 +26,14 @@ const Admin = () => {
       icon: <Trash2 className="w-10 h-10 text-error" />,
       button: "Delete",
       route: "/admin/delete-problem",
+    },
+
+    {
+      title: "Video Upload",
+      description: "Upload new videos Solution of the platform.",
+      icon: <Video className="w-10 h-10 text-error" />,
+      button: "Upload",
+      route: "/admin/video-upload",
     },
   ];
 

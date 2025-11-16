@@ -6,6 +6,7 @@ import {userRoutes} from './routes/user.route.js';
 import { problemRouter } from './routes/problem.route.js';
 import { submitRouter } from './routes/submit.route.js';
 import { aiRouter } from './routes/ai.routes.js';
+import {videoRouter} from './routes/video.routes.js';
 
 
 const app = express();
@@ -28,5 +29,6 @@ app.use('/api/auth/users/', userRoutes);
 app.use("/api/auth/problem/",problemRouter);
 app.use("/api/auth/problem/",submitRouter);
 app.use("/api/auth/ai/",aiRouter);
+app.use("/api/auth/video",videoRouter);
 
 export default app;

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import axiosClient from "../utils/axiosClient";
 import AiChat from "../components/AiChat.jsx";
-
+import Editorial from "../components/Editorial.jsx";
 const languageOptions = [
   { id: "javascript", label: "JavaScript" },
   { id: "java", label: "Java" },
@@ -182,7 +182,6 @@ export default function ProblemPage() {
   );
 
   if (loading && !problem) return <div className="p-6">Loading...</div>;
-
   return (
     <div className="min-h-screen bg-base-200 p-6">
       <div className="container mx-auto grid grid-cols-12 gap-6">
@@ -234,6 +233,15 @@ export default function ProblemPage() {
 
                 <button
                   className={`tab ${
+                    activeLeftTab === "tests" ? "tab-active" : ""
+                  }`}
+                  onClick={() => setActiveLeftTab("Editorial")}
+                >
+                  Editorial
+                </button>
+
+                <button
+                  className={`tab ${
                     activeLeftTab === "Aichat" ? "tab-active" : ""
                   }`}
                   onClick={() => setActiveLeftTab("Aichat")}
@@ -263,6 +271,16 @@ export default function ProblemPage() {
               </div>
 
               {activeLeftTab === "Aichat" && <AiChat problem={problem} />}
+              {activeLeftTab === 'Editorial' && (
+                  <div className="not-prose mt-4">
+  <Editorial
+    secureUrl={problem.secureUrl}
+    thumbnailUrl={problem.thumbnailUrl}
+    duration={problem.duration}
+  />
+</div>
+
+                )}
 
               {activeLeftTab === "description" && (
                 <div
