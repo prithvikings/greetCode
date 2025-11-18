@@ -14,8 +14,6 @@ function HomePage() {
     tag: "all",
     status: "all",
   });
-  
-  
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -57,32 +55,52 @@ function HomePage() {
 
     const matchesTag = filter.tag === "all" || problem.tags === filter.tag;
 
-   let matchesStatus = true;
+    let matchesStatus = true;
 
-if (filter.status === "solved") {
-  matchesStatus = solvedProblems.some(sp => sp._id === problem._id);
-} else if (filter.status === "unsolved") {
-  matchesStatus = !solvedProblems.some(sp => sp._id === problem._id);
-}
+    if (filter.status === "solved") {
+      matchesStatus = solvedProblems.some((sp) => sp._id === problem._id);
+    } else if (filter.status === "unsolved") {
+      matchesStatus = !solvedProblems.some((sp) => sp._id === problem._id);
+    }
     return matchesDifficulty && matchesTag && matchesStatus;
   });
 
+
+  // Helper function to return the correct Tailwind class string
+const getDifficultyClass = (difficulty) => {
+  if (difficulty === "Easy") {
+    // Correct classes: green text
+    return "text-green-500 font-medium tracking-wide";
+  } else if (difficulty === "Medium") {
+    // Correct classes: yellow text
+    return "text-yellow-500 font-medium tracking-wide";
+  } else if (difficulty === "Hard") {
+    // Correct classes: red text
+    return "text-red-500 font-medium tracking-wide";
+  }
+  return "text-zinc-300"; // Fallback to grey if difficulty is unknown
+};
+
   return (
-    <div className="min-h-screen bg-base-200">
-      <nav className="navbar bg-base-100 shadow-lg px-4">
+    <div className="min-h-screen  bg-zinc-900">
+      <nav className="navbar bg-zinc-800 shadow-lg px-4 text-zinc-200">
         <div className="flex-1">
           <NavLink to="/" className="btn btn-ghost normal-case text-xl">
-            CodePractice
+            GreetCode
           </NavLink>
         </div>
-        
-        <div className="flex-none gap-4">
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="btn btn-md bg-zinc-900 hover:bg-zinc-850 active:bg-zinc-950 active:scale-0.95 text-blue-400 font-medium  rounded-md drop-shadow-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] relative">
+            Ai
+            <img className="size-4 " src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/gemini-color.png" alt="" />
+          </div>
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} className="btn btn-ghost">
+            <div tabIndex={0} className="btn btn-md bg-zinc-900 hover:bg-zinc-850 active:bg-zinc-950 active:scale-0.95 text-yellow-400 font-medium  rounded-md drop-shadow-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
               {user?.firstname || "Guest"}
             </div>
-            <ul className="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-32 ">
-              <li>
+            <ul className="mt-3 p-2 shadow menu menu-md dropdown-content rounded-box w-48 bg-gradient-to-r from-neutral-800 via-stone-800 to-zinc-950 outline-none border-0 transition-shadow transition-all ease-in-out text-zinc-300 gap-2">
+              <li className="bg-red-600/10">
                 <button onClick={handleLogout}>Logout</button>
               </li>
               {user?.role === "admin" && (
@@ -101,20 +119,35 @@ if (filter.status === "solved") {
 
         <div className="flex flex-wrap gap-4 mb-6">
           <select
-            className="select select-bordered"
+            className="select select-bordered bg-zinc-800 outline-none border-0 transition-shadow transition-all ease-in-out text-zinc-300"
             value={filter.difficulty}
             onChange={(e) =>
               setFilter({ ...filter, difficulty: e.target.value })
             }
           >
             <option value="all">All Diffuculties</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option
+              className="text-green-500 font-normal tracking-wide"
+              value="easy"
+            >
+              Easy
+            </option>
+            <option
+              className="text-yellow-500 font-normal  tracking-wide"
+              value="medium"
+            >
+              Medium
+            </option>
+            <option
+              className="text-red-500 font-normal tracking-wide"
+              value="hard"
+            >
+              Hard
+            </option>
           </select>
 
           <select
-            className="select select-bordered"
+            className="select select-bordered bg-zinc-800 outline-none border-0 transition-shadow transition-all ease-in-out text-zinc-300"
             value={filter.tag}
             onChange={(e) => setFilter({ ...filter, tag: e.target.value })}
           >
@@ -126,26 +159,30 @@ if (filter.status === "solved") {
           </select>
 
           <select
-            className="select select-bordered"
+            className="select select-bordered bg-zinc-800 outline-none border-0 transition-shadow transition-all ease-in-out text-zinc-300"
             value={filter.status}
             onChange={(e) => setFilter({ ...filter, status: e.target.value })}
           >
             <option value="all">All Status</option>
-            <option value="solved">Solved</option>
+            <option className="text-green-400" value="solved">Solved</option>
             <option value="unsolved">Unsolved</option>
           </select>
+
+          <input type="text" placeholder="Search the question..." className="px-4 py-2 outline-none bg-zinc-800 flex-1 text-zinc-200 placeholder:text-zinc-300 placeholder:font-normal" />
         </div>
 
         {/* Problems List */}
 
         <div className="grid gap-4">
           {filterProblems.map((problem) => (
-            <div key={problem._id} className="card bg-base-100 shadow-xl">
+            <div key={problem._id} className="card bg-zinc-800 shadow-2xl">
               <div className="card-body">
                 <div className="flex items-center justify-between">
-                  <Link to={`/problem/${problem._id}`} className="card-title">{problem.title}</Link>
+                  <Link to={`/problem/${problem._id}`} className="card-title">
+                    {problem.title}
+                  </Link>
                   {solvedProblems.some((sp) => sp._id === problem._id) && (
-                    <div className="badge badge-success gap-2">
+                    <div className="bg-zinc-900 rounded-md shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-shadow-lg flex items-center px-4 py-2 text-green-400 font-medium gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -165,15 +202,15 @@ if (filter.status === "solved") {
                   )}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-4 mt-2">
                   <div
-                    className={`badge ${getDiffcultyBadgeColor(
+                    className={`bg-zinc-900 rounded-md shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]  font-semibold outline-none px-4 py-2 ${getDifficultyClass(
                       problem.difficulty
                     )}`}
                   >
                     {problem.difficulty}
                   </div>
-                  <div className="badge badge-info">{problem.tags}</div>
+                  <div className="bg-transparent border-1 border-zinc-400 text-zinc-300 hover:bg-zinc-900 cursor-pointer  rounded-md shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]  font-semibold outline-none px-4 py-2">{problem.tags}</div>
                 </div>
               </div>
             </div>
@@ -183,18 +220,5 @@ if (filter.status === "solved") {
     </div>
   );
 }
-
-const getDiffcultyBadgeColor = (difficulty) => {
-  switch (difficulty.toLowerCase()) {
-    case "easy":
-      return "badge-success";
-    case "medium":
-      return "badge-warning";
-    case "hard":
-      return "badge-error";
-    default:
-      return "badge-secondary";
-  }
-};
 
 export default HomePage;

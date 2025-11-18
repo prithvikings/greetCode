@@ -5,6 +5,7 @@ import Editor from "@monaco-editor/react";
 import axiosClient from "../utils/axiosClient";
 import AiChat from "../components/AiChat.jsx";
 import Editorial from "../components/Editorial.jsx";
+import { Play } from "lucide-react";
 const languageOptions = [
   { id: "javascript", label: "JavaScript" },
   { id: "java", label: "Java" },
@@ -183,7 +184,7 @@ export default function ProblemPage() {
 
   if (loading && !problem) return <div className="p-6">Loading...</div>;
   return (
-    <div className="min-h-screen bg-base-200 p-6">
+    <div className="min-h-screen bg-zinc-950/60 p-6">
       <div className="container mx-auto grid grid-cols-12 gap-6">
         {/* LEFT: Description / Examples / Tests */}
         <div className="col-span-5">
@@ -207,8 +208,8 @@ export default function ProblemPage() {
             <div className="mt-4">
               <div className="tabs mb-3">
                 <button
-                  className={`tab ${
-                    activeLeftTab === "description" ? "tab-active" : ""
+                    className={`tab ${
+                    activeLeftTab === "description" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={() => setActiveLeftTab("description")}
                 >
@@ -216,7 +217,7 @@ export default function ProblemPage() {
                 </button>
                 <button
                   className={`tab ${
-                    activeLeftTab === "examples" ? "tab-active" : ""
+                    activeLeftTab === "examples" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={() => setActiveLeftTab("examples")}
                 >
@@ -224,7 +225,7 @@ export default function ProblemPage() {
                 </button>
                 <button
                   className={`tab ${
-                    activeLeftTab === "tests" ? "tab-active" : ""
+                    activeLeftTab === "tests" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={() => setActiveLeftTab("tests")}
                 >
@@ -233,7 +234,7 @@ export default function ProblemPage() {
 
                 <button
                   className={`tab ${
-                    activeLeftTab === "tests" ? "tab-active" : ""
+                   activeLeftTab === "Editorial" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={() => setActiveLeftTab("Editorial")}
                 >
@@ -242,7 +243,7 @@ export default function ProblemPage() {
 
                 <button
                   className={`tab ${
-                    activeLeftTab === "Aichat" ? "tab-active" : ""
+                    activeLeftTab === "Aichat" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={() => setActiveLeftTab("Aichat")}
                 >
@@ -251,7 +252,7 @@ export default function ProblemPage() {
 
                 <button
                   className={`tab ${
-                    activeLeftTab === "submissions" ? "tab-active" : ""
+                    activeLeftTab === "submissions" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
                   }`}
                   onClick={async () => {
                     setActiveLeftTab("submissions");
@@ -294,46 +295,118 @@ export default function ProblemPage() {
               )}
 
               {activeLeftTab === "submissions" && (
-                <div className="mt-3">
-                  <h3 className="font-semibold">Your Submissions</h3>
+  <div className="mt-4">
+    <h3 className="text-2xl font-bold mb-4 border-b border-gray-700 pb-2 text-white">
+      Your Submissions History
+    </h3>
 
-                  {userSubmissions.length === 0 && (
-                    <div className="text-sm mt-2">No submissions yet.</div>
-                  )}
+    {/* Case 1: No Submissions */}
+    {userSubmissions.length === 0 && (
+      <div className="text-gray-400 text-base mt-4 p-4 border border-gray-700 rounded-lg bg-gray-800 shadow-lg">
+        <p>You haven't submitted a solution yet.</p>
+        <p>Try solving the problem!</p>
+      </div>
+    )}
 
-                  {userSubmissions.length > 0 && (
-                    <div className="space-y-3 mt-3">
-                      {userSubmissions.map((sub, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3 border rounded bg-base-100"
-                        >
-                          <div>
-                            <strong>Status:</strong> {sub.status}
-                          </div>
-                          <div>
-                            <strong>Language:</strong> {sub.language}
-                          </div>
-                          <div>
-                            <strong>Passed:</strong> {sub.testcasesPassed}/
-                            {sub.totalTestcases}
-                          </div>
-                          <div>
-                            <strong>Runtime:</strong> {sub.runtime} ms
-                          </div>
-                          <div>
-                            <strong>Memory:</strong> {sub.memory} KB
-                          </div>
-                          <div className="text-xs text-muted mt-1">
-                            Submitted at:{" "}
-                            {new Date(sub.submittedAt).toLocaleString()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+    {/* Case 2: Submissions Exist - Display as a Table */}
+    {userSubmissions.length > 0 && (
+      <div 
+        className="w-full shadow-lg rounded-lg overflow-x-scroll scrollbar-hidden"
+      > 
+        <table className="min-w-full divide-y divide-gray-700">
+          <thead className="bg-gray-900">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Lang
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Test Cases
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Runtime
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Memory
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Submitted
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-gray-800 divide-y divide-gray-700">
+            {userSubmissions.map((sub, idx) => {
+              // Helper function to determine badge style based on status
+              const statusColor = (status) => {
+                switch (status) {
+                  case "Accepted":
+                    // *** HIGHER CONTRAST COLORS AND BOLD TEXT ***
+                    return "bg-green-600 text-white font-bold"; 
+                  case "Wrong Answer":
+                  case "Time Limit Exceeded":
+                    return "bg-red-700 text-red-100"; 
+                  case "Compilation Error":
+                    return "bg-yellow-700 text-yellow-100";
+                  default:
+                    return "bg-gray-700 text-gray-100";
+                }
+              };
+              
+              const isAccepted = sub.status === "Accepted";
+
+              return (
+                <tr 
+                  key={idx} 
+                  className="hover:bg-gray-700 transition duration-150 ease-in-out cursor-pointer"
+                >
+                  {/* Status Badge */}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      // Removed 'font-semibold' from the inline class and rely on 'font-bold' in the helper
+                      className={`px-3 inline-flex text-xs leading-5 rounded-full ${statusColor(sub.status)}`}
+                    >
+                      {sub.status}
+                    </span>
+                  </td>
+                  
+                  {/* Language */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    {sub.language}
+                  </td>
+                  
+                  {/* Test Cases Passed */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <span className={isAccepted ? "text-green-400 font-medium" : "text-red-400 font-medium"}>
+                      {sub.testcasesPassed}
+                    </span>
+                    <span className="text-gray-400">/{sub.totalTestcases}</span>
+                  </td>
+                  
+                  {/* Runtime */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                    {sub.runtime} ms
+                  </td>
+                  
+                  {/* Memory */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                    {sub.memory} KB
+                  </td>
+                  
+                  {/* Submission Time */}
+                  <td className="px-6 py-4 text-sm text-gray-400">
+                    {new Date(sub.submittedAt).toLocaleString()}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+)}
 
               {activeLeftTab === "examples" && (
                 <div>
@@ -380,12 +453,12 @@ export default function ProblemPage() {
         <div className="col-span-7">
           <div className="card p-4 mb-4">
             <div className="flex items-center justify-between gap-4 mb-3">
-              <div className="flex gap-2">
+              <div className="flex gap-2  px-4 py-2 rounded">
                 {languageOptions.map((opt) => (
                   <button
                     key={opt.id}
-                    className={`btn btn-sm ${
-                      selectedLanguage === opt.id ? "btn-primary" : "btn-ghost"
+                    className={`btn btn-sm bg-zinc-800 hover:bg-zinc-850 active:bg-zinc-900 active:scale-0.95 ${
+                      selectedLanguage === opt.id ? "bg-gradient-to-l from bg-zinc-600 to bg-zinc-900 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : "btn-ghost"
                     }`}
                     onClick={() => {
                       setSelectedLanguage(opt.id);
@@ -411,7 +484,7 @@ export default function ProblemPage() {
 
               <div className="flex gap-2">
                 <button
-                  className="btn btn-outline"
+                  className="btn btn-outline btn-md bg-zinc-800 hover:bg-zinc-900 active:bg-gray-950 active:scale-0.95 drop-shadow-2xl text-shadow-2xs"
                   onClick={() => {
                     const starter = pickStarterCode(
                       problem?.startCode || [],
@@ -427,10 +500,10 @@ export default function ProblemPage() {
                   Reset Starter
                 </button>
 
-                <button className="btn btn-accent" onClick={handleRun}>
-                  Run
+                <button className="btn bg-zinc-800 hover:bg-zinc-900 active:bg-gray-950 active:scale-0.95 px-6 py-2 drop-shadow-2xl text-shadow-2xs" onClick={handleRun}>
+                  <Play size={16} />
                 </button>
-                <button className="btn btn-primary" onClick={handleSubmitCode}>
+                <button className="btn bg-zinc-800 hover:bg-zinc-900 active:bg-gray-950 text-green-500 active:scale-0.95 px-6 py-2 drop-shadow-2xl text-shadow-2xs" onClick={handleSubmitCode}>
                   Submit
                 </button>
               </div>
