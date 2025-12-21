@@ -15,6 +15,7 @@ import AdminDelete from "./components/AdminDelete";
 import AdminUpdateForm from "./components/AdminUpdateForm";
 import AdminVideo from "./components/AdminVideo";
 import UploadVideo from "./components/UploadVideo";
+import LandingHero from "./Landing/LandingHero";
 
 const App = () => {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
@@ -39,6 +40,10 @@ const App = () => {
     <Routes>
       <Route
         path="/"
+        element={<LandingHero />}
+      />
+      <Route
+        path="/home"
         element={
           isAuthenticated ? <HomePage></HomePage> : <Navigate to="/login" />
         }

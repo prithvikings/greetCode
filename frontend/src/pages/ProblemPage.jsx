@@ -238,15 +238,18 @@ export default function ProblemPage() {
                   }`}
                   onClick={() => setActiveLeftTab("Editorial")}
                 >
+                  
                   Editorial
                 </button>
 
                 <button
                   className={`tab ${
-                    activeLeftTab === "Aichat" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs" : ""
+                    activeLeftTab === "Aichat" ? "btn  btn-md text-[#ffa116] font-semibold  hover:bg-zinc-950 active:bg-zinc-900 active:scale-0.95 border-zinc-950 drop-shadow-3xl text-shadow-2xs flex items-center gap-2" : ""
                   }`}
                   onClick={() => setActiveLeftTab("Aichat")}
                 >
+            <img className="size-4 " src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/gemini-color.png" alt="" />
+
                   AiChat
                 </button>
 
