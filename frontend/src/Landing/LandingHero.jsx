@@ -9,17 +9,20 @@ import Comparison from './components/Comparison'
 import SocialProof from './components/SocialProof'
 import {FinalCTA} from './components/FinalCTA'
 import Footer from './components/Footer'
+import Navbar from "./components/Navbar";
 
 const LandingHero = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
+      <Navbar />
     <Hero />
+    
     <Problem />
     <Solution />
     <HowItWorks />
     <Features />
-    <Audience />
-    <Comparison />
+   <Audience />
+     <Comparison />
     <SocialProof />
     <FinalCTA />
     <Footer />
