@@ -1,13 +1,12 @@
-ModeToggle
 // src/components/togglebtn.jsx
 "use client";
 
-import { Toggle } from "./ui/toggle";
+import { Toggle } from "@/components/ui/toggle";
 import { Moon, Sun } from "lucide-react";
 // Remove: import { useState } from "react"; 
-import { useTheme } from '../components/theme-provider.jsx';
+import { useTheme } from '../context/ThemeContext';
 
-function ModeToggle() {
+function Togglebtn() {
   // Use the theme state directly from the context.
   // The local 'themes' state is redundant and removed.
   const { theme, toggleTheme } = useTheme();
@@ -50,4 +49,4 @@ function ModeToggle() {
   );
 }
 
-export { ModeToggle };
+export { Togglebtn };

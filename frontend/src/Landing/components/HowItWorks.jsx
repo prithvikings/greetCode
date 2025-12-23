@@ -1,38 +1,48 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Search, Terminal, PlayCircle, Trophy, ArrowRight } from "lucide-react";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
 
 // --- 1. THE MINI-VISUALS (Complex Animated Icons) ---
 
-// Step 1: "Search/Pick" - A magnifying glass scanning a list
+// Step 1: "Search/Pick"
 const SearchVisual = () => (
   <div className="relative w-full h-full flex items-center justify-center">
-    <div className="w-16 h-12 bg-zinc-100 rounded-md flex flex-col gap-2 p-2 border border-zinc-200 overflow-hidden">
-        <div className="w-full h-2 bg-zinc-200 rounded-full" />
-        <div className="w-3/4 h-2 bg-zinc-200 rounded-full" />
-        <div className="w-1/2 h-2 bg-zinc-200 rounded-full" />
+    {/* DARK MODE: bg-zinc-100 -> dark:bg-zinc-800, border-zinc-200 -> dark:border-zinc-700 */}
+    <div className="w-16 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-md flex flex-col gap-2 p-2 border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+        {/* DARK MODE: Internal bars darkened */}
+        <div className="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full" />
+        <div className="w-3/4 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full" />
+        <div className="w-1/2 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full" />
         
         {/* Scanning Highlight */}
         <motion.div 
             animate={{ top: ["0%", "100%", "0%"] }}
             transition={{ duration: 2, ease: "linear", repeat: Infinity }}
-            className="absolute left-0 right-0 h-4 bg-sky-500/10 blur-sm top-0"
+            className="absolute left-0 right-0 h-4 bg-sky-500/10 dark:bg-sky-500/20 blur-sm top-0"
         />
     </div>
     <motion.div 
         animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute -right-2 -bottom-2 bg-white p-1.5 rounded-full shadow-md border border-zinc-100 text-sky-500"
+        // DARK MODE: Icon bubble bg-white -> dark:bg-zinc-900, border-zinc-100 -> dark:border-zinc-700
+        className="absolute -right-2 -bottom-2 bg-white dark:bg-zinc-900 p-1.5 rounded-full shadow-md border border-zinc-100 dark:border-zinc-700 text-sky-500"
     >
         <Search className="w-4 h-4" />
     </motion.div>
   </div>
 );
 
-// Step 2: "Try Solving" - A terminal typing effect
+// Step 2: "Try Solving"
 const CodeVisual = () => (
   <div className="relative w-full h-full flex items-center justify-center">
-    <div className="w-20 h-14 bg-zinc-900 rounded-md border border-zinc-700 p-2 flex flex-col gap-1.5 shadow-lg">
+    {/* DARK MODE: Terminal bg is already dark, but we darken border to blend better */}
+    <div className="w-20 h-14 bg-zinc-900 dark:bg-black rounded-md border border-zinc-700 dark:border-zinc-800 p-2 flex flex-col gap-1.5 shadow-lg">
         <div className="flex gap-1 mb-1">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
             <div className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
@@ -57,7 +67,7 @@ const CodeVisual = () => (
   </div>
 );
 
-// Step 3: "Watch AI" - A play button with ripples
+// Step 3: "Watch AI"
 const VideoVisual = () => (
   <div className="relative w-full h-full flex items-center justify-center">
     {/* Ripples */}
@@ -69,13 +79,14 @@ const VideoVisual = () => (
             className="absolute w-10 h-10 rounded-full border border-sky-500/30"
         />
     ))}
-    <div className="relative z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border border-zinc-100">
-        <PlayCircle className="w-6 h-6 text-sky-600 fill-sky-50" />
+    {/* DARK MODE: Center button white -> zinc-900, border-zinc-100 -> border-zinc-700 */}
+    <div className="relative z-10 w-12 h-12 bg-white dark:bg-zinc-900 rounded-full flex items-center justify-center shadow-md border border-zinc-100 dark:border-zinc-700">
+        <PlayCircle className="w-6 h-6 text-sky-600 fill-sky-50 dark:fill-sky-900/20" />
     </div>
   </div>
 );
 
-// Step 4: "Success" - A trophy popping up
+// Step 4: "Success"
 const SuccessVisual = () => (
   <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
     <motion.div
@@ -107,9 +118,18 @@ const StepCard = ({ number, title, text, visual, isLast }) => {
             {/* The Visual Bubble */}
             <motion.div 
                 whileHover={{ y: -5, scale: 1.05 }}
-                className="w-24 h-24 rounded-2xl bg-white border border-zinc-200 shadow-sm flex items-center justify-center mb-6 relative z-10 group-hover:shadow-xl group-hover:border-sky-100 transition-all duration-300"
+                className={cn(
+                    "w-24 h-24 rounded-2xl border shadow-sm flex items-center justify-center mb-6 relative z-10 transition-all duration-300",
+                    // DARK MODE: Main Bubble Colors
+                    "bg-white border-zinc-200 group-hover:border-sky-100 group-hover:shadow-xl",
+                    "dark:bg-zinc-900 dark:border-zinc-800 dark:group-hover:border-sky-900/50 dark:group-hover:shadow-sky-900/20"
+                )}
             >
-                <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-bold font-mono border-4 border-white">
+                {/* DARK MODE: Badge Logic 
+                    1. Invert colors: Black bg/White text -> White bg/Black text (dark:bg-zinc-100 dark:text-zinc-900)
+                    2. Fix Border: The border creates the 'cutout' effect. It must match the card background (white vs zinc-900).
+                */}
+                <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold font-mono border-4 bg-zinc-900 text-white border-white dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-900">
                     {number}
                 </div>
                 <div className="w-full h-full p-2">
@@ -118,12 +138,12 @@ const StepCard = ({ number, title, text, visual, isLast }) => {
             </motion.div>
 
             {/* Content */}
-            <h3 className="text-lg font-medium text-zinc-900 font-poppins mb-2">{title}</h3>
-            <p className="text-sm text-zinc-500 font-inter leading-snug max-w-[200px]">{text}</p>
+            <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 font-poppins mb-2">{title}</h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-inter leading-snug max-w-[200px]">{text}</p>
             
-            {/* Mobile Connector Arrow (Hidden on Desktop) */}
+            {/* Mobile Connector Arrow */}
             {!isLast && (
-                <div className="md:hidden mt-6 text-zinc-300">
+                <div className="md:hidden mt-6 text-zinc-300 dark:text-zinc-700">
                     <ArrowRight className="w-6 h-6 mx-auto rotate-90" />
                 </div>
             )}
@@ -162,16 +182,16 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden">
+    <section className="py-24 px-6 relative overflow-hidden bg-white dark:bg-zinc-950">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-200 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-zinc-800 to-transparent" />
       
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-20 space-y-2">
-            <h2 className="text-4xl font-poppins font-medium text-zinc-900">
+            <h2 className="text-4xl font-poppins font-medium text-zinc-900 dark:text-zinc-50">
                 How It Works
             </h2>
-            <p className="text-zinc-500 max-w-lg mx-auto leading-snug font-inter">
+            <p className="text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto leading-snug font-inter">
                 A structured approach to mastering Data Structures and Algorithms without the burnout.
             </p>
         </div>
@@ -179,12 +199,13 @@ export function HowItWorks() {
         <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
             
             {/* The "Connector Beam" (Desktop Only) */}
-            <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-zinc-100 -z-0">
+            {/* DARK MODE: bg-zinc-100 -> dark:bg-zinc-800. Gradient adjusted for subtle glow on dark. */}
+            <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-zinc-100 dark:bg-zinc-800 -z-0">
                 <motion.div 
                     initial={{ width: "0%" }}
                     whileInView={{ width: "100%" }}
                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                    className="h-full bg-gradient-to-r from-zinc-100 via-sky-200 to-zinc-100"
+                    className="h-full bg-gradient-to-r from-zinc-100 via-sky-200 to-zinc-100 dark:from-zinc-800 dark:via-sky-700 dark:to-zinc-800"
                 />
             </div>
 

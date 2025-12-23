@@ -108,7 +108,7 @@ export function Solution() {
   ];
 
   return (
-    <section className="relative py-24 px-6 bg-zinc-50">
+    <section className="relative py-24 px-6 bg-zinc-50 dark:bg-zinc-900 ">
        {/* Top Hatch Bar */}
       <div className="absolute top-0 left-0 right-0 h-8 border-b border-zinc-200 dark:border-zinc-800 flex bg-zinc-50 dark:bg-zinc-950">
         <div
@@ -135,11 +135,11 @@ export function Solution() {
         {/* Left Column: Text & Features */}
         <div className="space-y-8">
           <div className="space-y-4">
-            <h2 className="text-4xl font-poppins text-zinc-900 leading-tight">
+            <h2 className="text-4xl font-poppins text-zinc-900 dark:text-zinc-200 leading-tight">
               Every Problem Comes With <br />
               <span className="text-sky-600">An AI Video Tutor.</span>
             </h2>
-            <p className="text-lg text-zinc-500 font-poppins leading-relaxed">
+            <p className="text-lg text-zinc-500 dark:text-zinc-400 font-spacegrotesk leading-snug">
               Stuck? Don't just read code. Watch a short, focused video that breaks down the logic visually before diving into the syntax.
             </p>
           </div>
@@ -156,14 +156,14 @@ export function Solution() {
                 <div className="h-6 w-6 rounded-full bg-sky-100 flex items-center justify-center group-hover:bg-sky-600 transition-colors duration-300">
                     <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 group-hover:text-white transition-colors duration-300" />
                 </div>
-                <span className="text-zinc-700 font-medium font-inter">{item}</span>
+                <span className="text-zinc-700 dark:text-zinc-500 font-medium font-poppins">{item}</span>
               </motion.div>
             ))}
           </div>
 
           <div className="pt-4">
-             <button className="px-6 py-3 bg-zinc-900 text-white rounded-lg font-medium hover:bg-zinc-800 transition shadow-lg shadow-zinc-500/20 flex items-center gap-2">
-                <Play className="w-4 h-4 fill-current" />
+             <button className="px-6 py-2 bg-zinc-900  text-white hover:bg-zinc-800 dark:bg-zinc-300 dark:text-zinc-900 dark:hover:bg-zinc-400 rounded-lg font-medium font-spacegrotesk  transition shadow-lg shadow-zinc-500/20 flex items-center gap-2 cursor-pointer">
+                <Play className="w-4 h-4 " />
                 Watch Demo
              </button>
           </div>
