@@ -93,7 +93,9 @@ export function Features() {
   ];
 
   return (
-    <section className="relative py-24 px-6 overflow-hidden bg-white dark:bg-zinc-950">
+    <section
+    id="features"
+    className="relative py-24 px-6 overflow-hidden bg-white dark:bg-zinc-950">
       {/* Background Grid Texture */}
       {/* Note: I added a dark mode specific gradient using zinc-800 (#27272a) for the lines so they are visible on black */}
       <div className="absolute inset-0 pointer-events-none bg-[size:24px_24px] 

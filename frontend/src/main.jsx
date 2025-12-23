@@ -7,13 +7,14 @@ import { store } from './store/store.js';
 import { Provider } from 'react-redux'
 import { ThemeProvider } from "./context/ThemeContext";
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
     <BrowserRouter>
       <ThemeProvider>
-        <App />
-      </ThemeProvider>
+    <App />
+</ThemeProvider>
     </BrowserRouter>
     </Provider>
   </StrictMode>,

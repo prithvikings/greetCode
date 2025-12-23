@@ -60,6 +60,18 @@ export default function Contribution() {
   { date: "2025-10-04", count: 3 },
   { date: "2025-10-05", count: 8 },
   { date: "2025-10-06", count: 2 },
+  { date: "2025-11-26", count: 5 },
+  { date: "2025-11-25", count: 9 },
+  { date: "2025-11-30", count: 2 },
+  { date: "2025-11-06", count: 3 },
+  { date: "2025-11-12", count: 5 },
+  { date: "2025-11-29", count: 7 },
+  { date: "2025-11-10", count: 4 },
+  { date: "2025-11-17", count: 6 },
+  { date: "2025-11-16", count: 9 },
+  { date: "2025-11-22", count: 2 },
+  { date: "2025-11-20", count: 4 },
+  { date: "2025-11-26", count: 8 },
 ];
 
   return (

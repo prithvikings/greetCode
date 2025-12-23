@@ -255,52 +255,80 @@ const Node = ({ cx, cy, delay, isRoot, isLeaf }) => (
 );
 
 
-// VISUAL 4: Chaos to Clarity
-// DARK MODE FIX: Handled background, chart lines, and grid visibility.
+// VISUAL 4: Chaos to Clarity (New Version)
+// Concept: Scattered particles converging into a straight line/structure
 const ClarityChartSkeleton = () => {
     return (
-        <div className="w-full h-full min-h-[8rem] relative flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden text-zinc-200/50 dark:text-zinc-800/50">
-             {/* Background Grid - Uses currentColor for dots to adapt to dark mode */}
-             <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '10px 10px' }} />
+        <div className="w-full h-full min-h-[8rem] relative flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+             
+             {/* Dynamic Grid Background */}
+             <div className="absolute inset-0 opacity-30" 
+                  style={{ 
+                      backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', 
+                      backgroundSize: '16px 16px',
+                      color: 'var(--tw-colors-zinc-300)' // Tailwind color variable reference for light mode
+                  }} 
+             >
+                {/* Dark mode override for grid color */}
+                <style jsx>{`
+                    .dark .bg-zinc-950 .absolute {
+                        color: var(--tw-colors-zinc-700);
+                    }
+                `}</style>
+             </div>
 
-             {/* 1. The Chaos Phase */}
-             <svg viewBox="0 0 100 50" className="w-full h-full absolute inset-0 opacity-30">
-                <ChaosLine color="#ef4444" delay={0} />
-                <ChaosLine color="#f59e0b" delay={0.2} />
-                <ChaosLine color="#8b5cf6" delay={0.4} />
-             </svg>
-
-             {/* 2. The Clarity Phase */}
-             <svg viewBox="0 0 100 50" className="w-full h-full relative z-10 px-4">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
-                        <stop offset="100%" stopColor="#10b981" />
-                    </linearGradient>
-                </defs>
-                <motion.path 
-                    d="M0 45 C 20 40, 40 10, 100 5" 
-                    fill="none" 
-                    stroke="url(#gradient)" 
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }} 
-                    animate={{ pathLength: 1 }} 
-                    transition={{ duration: 1.5, delay: 1, ease: "easeInOut" }}
+             {/* The "Chaos" Particles */}
+             {[...Array(12)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute w-1.5 h-1.5 rounded-full bg-red-400/80 dark:bg-red-500/80"
+                    initial={{ 
+                        x: (Math.random() - 0.5) * 200, 
+                        y: (Math.random() - 0.5) * 100,
+                        opacity: 0 
+                    }}
+                    animate={{ 
+                        x: [null, (i - 6) * 15], // Converge to a line
+                        y: [null, 0],           // Center vertically
+                        opacity: [0, 1, 1],
+                        backgroundColor: ["#f87171", "#34d399"] // Red to Emerald transition
+                    }}
+                    transition={{ 
+                        duration: 2, 
+                        delay: i * 0.1, 
+                        ease: "easeInOut",
+                        times: [0, 0.8, 1],
+                        repeat: Infinity,
+                        repeatDelay: 2
+                    }}
                 />
-             </svg>
+             ))}
 
-             {/* 3. Success Badge Pop - Dark Mode adjusted */}
+             {/* The "Clarity" Line appearing */}
+             <motion.div
+                className="absolute h-0.5 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "80%", opacity: 1 }}
+                transition={{ 
+                    delay: 1.5, 
+                    duration: 1, 
+                    ease: "easeOut",
+                    repeat: Infinity,
+                    repeatDelay: 2
+                }}
+             />
+
+             {/* Success Badge */}
              <motion.div 
-                initial={{ scale: 0, rotate: -20 }} 
-                animate={{ scale: 1, rotate: 0 }} 
-                transition={{ delay: 2.2, type: "spring", stiffness: 200 }}
-                className="absolute top-3 right-3 bg-white dark:bg-zinc-900 shadow-lg border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 z-20"
+                initial={{ scale: 0, y: 10 }} 
+                animate={{ scale: 1, y: 0 }} 
+                transition={{ delay: 2.2, type: "spring", stiffness: 200, repeat: Infinity, repeatDelay: 2 }}
+                className="absolute bottom-4 bg-white dark:bg-zinc-800 shadow-lg border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 z-20"
             >
                 <div className="bg-emerald-100 dark:bg-emerald-900/50 p-0.5 rounded-full">
                     <Check className="w-3 h-3" /> 
                 </div>
-                Optimized
+                Pattern Found
              </motion.div>
         </div>
     )

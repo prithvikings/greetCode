@@ -1,51 +1,87 @@
-// src/components/togglebtn.jsx
 "use client";
 
+import { useState } from "react";
 import { Toggle } from "@/components/ui/toggle";
 import { Moon, Sun } from "lucide-react";
-// Remove: import { useState } from "react"; 
-import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
+
+const DURATION = 0.25; // seconds
 
 function Togglebtn() {
-  // Use the theme state directly from the context.
-  // The local 'themes' state is redundant and removed.
   const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
-  // The button's pressed state is now directly tied to the global theme state.
+  // 🔑 VISUAL STATE (controls animation only)
+  const [visualDark, setVisualDark] = useState(isDark);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleToggle = () => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+
+    // 1️⃣ Trigger icon animation FIRST
+    setVisualDark((prev) => !prev);
+
+    // 2️⃣ AFTER animation completes → change actual theme
+    setTimeout(() => {
+      toggleTheme();
+      setIsAnimating(false);
+    }, DURATION * 1000);
+  };
+
   return (
-    <div>
-      <Toggle
-        // 1. Call the function that actually toggles the global theme
-        onClick={toggleTheme}
-        variant="outline"
-        className="group size-9 data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted cursor-pointer"
-        
-        // 2. Control the internal state/appearance using the global theme
-        pressed={theme === "dark"}
-        
-        // 3. This prop is now redundant since we use 'onClick' to handle the toggle
-        // and we don't need to manually update the local state.
-        // onPressedChange={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
-        
-        // 4. Update aria-label to use the global theme state
-        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      >
-        {/* Icon logic now uses the internal 'pressed' state, 
-            which is set by 'theme === "dark"' */}
-        <Moon
-          size={16}
-          strokeWidth={2}
-          className="shrink-0 scale-0 opacity-0 transition-all group-data-[state=on]:scale-100 group-data-[state=on]:opacity-100"
-          aria-hidden="true"
-        />
-        <Sun
-          size={16}
-          strokeWidth={2}
-          className="absolute shrink-0 scale-100 opacity-100 transition-all group-data-[state=on]:scale-0 group-data-[state=on]:opacity-0"
-          aria-hidden="true"
-        />
-      </Toggle>
-    </div>
+    <Toggle
+      onClick={handleToggle}
+      pressed={isDark}
+      variant="outline"
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      className="
+        relative size-9 corner-squircel
+        border border-zinc-200 dark:border-zinc-700
+        bg-white/70 dark:bg-zinc-900/60
+        backdrop-blur-sm
+        shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]
+        hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]
+        cursor-pointer
+        active:scale-[0.96]
+        overflow-hidden
+        transition-shadow
+      "
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {visualDark ? (
+          <motion.span
+            key="moon"
+            initial={{ x: -12, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 12, opacity: 0 }}
+            transition={{
+              duration: DURATION,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Moon size={16} strokeWidth={2} />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="sun"
+            initial={{ x: -12, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 12, opacity: 0 }}
+            transition={{
+              duration: DURATION,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <Sun size={16} strokeWidth={2} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </Toggle>
   );
 }
 
