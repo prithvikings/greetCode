@@ -16,7 +16,9 @@ import AdminUpdateForm from "./components/AdminUpdateForm";
 import AdminVideo from "./components/AdminVideo";
 import UploadVideo from "./components/UploadVideo";
 import LandingHero from "./Landing/LandingHero";
-
+import Discuss from "./pages/Discuss.jsx";
+import DiscussPost from "./pages/DiscussPost.jsx";
+import DiscussCreate from "./pages/DiscussCreate.jsx";
 const App = () => {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -50,11 +52,11 @@ const App = () => {
       />
       <Route
         path="/signup"
-        element={isAuthenticated ? <Navigate to="/" /> : <SignupPage />}
+        element={isAuthenticated ? <Navigate to="/home" /> : <SignupPage />}
       />
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />}
+        element={isAuthenticated ? <Navigate to="/home" /> : <LoginPage />}
       />
       <Route path="/problem/:problemid" element={<ProblemPage />} />
       <Route
@@ -83,6 +85,12 @@ const App = () => {
       <Route path="/admin/upload-video/:problemId" element={
         isAuthenticated && user?.role === "admin" ? <UploadVideo /> : <Navigate to="/" />
       } />
+      <Route path="/discuss" element={<Discuss />} />
+
+      {/* 2. The Detail Page (The :id part allows dynamic URLs like /discuss/1) */}
+      <Route path="/discuss/:id" element={<DiscussPost />} />
+
+      <Route path="/discuss/create" element={<DiscussCreate />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

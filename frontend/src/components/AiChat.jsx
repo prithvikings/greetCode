@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import axiosClient from "../utils/axiosClient";
+import { Send, Sparkles, User, Bot, Loader2 } from "lucide-react";
 
 const AiChat = ({ problem }) => {
-  const [messages, setMessages] = useState([]); 
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef(null);
@@ -71,77 +72,96 @@ const AiChat = ({ problem }) => {
   };
 
   return (
-    <div className="flex flex-col h-[500px] rounded-xl border bg-base-100 shadow-md overflow-hidden">
-
-      {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-2 space-y-6">
-
+    <div className="flex flex-col h-full bg-zinc-950 text-zinc-300 font-sans">
+      
+      {/* Chat History Area */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6 custom-scrollbar">
+        
+        {/* Empty State */}
         {messages.length === 0 && (
-          <div className="text-center text-base text-gray-500 mt-10">
-            Ask anything about this problem…
+          <div className="h-full flex flex-col items-center justify-center text-center opacity-50 space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+              <Sparkles size={32} className="text-indigo-500" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-zinc-200">AI Assistant</h3>
+              <p className="text-sm text-zinc-500 max-w-xs mt-1">
+                Ask for hints, complexity analysis, or help debugging your code.
+              </p>
+            </div>
           </div>
         )}
 
+        {/* Message List */}
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`chat ${
-              msg.role === "user" ? "chat-end" : "chat-start"
-            }`}
+            className={`flex w-full gap-3 ${
+              msg.role === "user" ? "flex-row-reverse" : "flex-row"
+            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
           >
             {/* Avatar */}
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full shadow">
-                <img
-                  src={
-                    msg.role === "user"
-                      ? "https://img.daisyui.com/images/profile/demo/gupta@192.webp"
-                      : "https://img.daisyui.com/images/profile/demo/robot@192.webp"
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Header */}
-            <div className="chat-header font-medium">
-              {msg.role === "user" ? "You" : "AI Tutor"}
+            <div
+              className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border
+                ${msg.role === "user" 
+                  ? "bg-indigo-600 border-indigo-500 text-white" 
+                  : "bg-zinc-800 border-zinc-700 text-emerald-400"
+                }`}
+            >
+              {msg.role === "user" ? <User size={16} /> : <Bot size={16} />}
             </div>
 
             {/* Bubble */}
             <div
-              className={`chat-bubble max-w-[80%] leading-relaxed text-[15px] ${
-                msg.role === "user"
-                  ? "chat-bubble-primary text-white"
-                  : "chat-bubble-accent"
-              }`}
+              className={`relative max-w-[85%] px-4 py-3 text-sm leading-relaxed shadow-sm
+                ${msg.role === "user"
+                  ? "bg-indigo-600 text-white rounded-2xl rounded-tr-none"
+                  : "bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-2xl rounded-tl-none"
+                }`}
             >
-              {msg.text || (
-                <span className="loading loading-dots loading-md"></span>
-              )}
+              <div className="whitespace-pre-wrap font-sans">
+                {msg.text || (
+                  <div className="flex items-center gap-2 text-zinc-500">
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Thinking...</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}
-
+        
         <div ref={messagesEndRef}></div>
       </div>
 
-      {/* Input Bar (Fixed bottom, like ChatGPT) */}
-      <div className="p-3 border-t bg-base-200 flex items-center gap-2">
-        <input
-          className="input input-bordered w-full"
-          placeholder="Message AI…"
-          value={input}
-          disabled={isStreaming}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button
-          className="btn btn-primary px-5"
-          disabled={isStreaming}
-          onClick={sendMessage}
-        >
-          Send
-        </button>
+      {/* Input Area */}
+      <div className="p-4 bg-zinc-950 border-t border-zinc-800">
+        <div className="relative flex items-center">
+          <input
+            className="w-full bg-zinc-900 text-zinc-200 text-sm rounded-full pl-5 pr-12 py-3.5 border border-zinc-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-zinc-600"
+            placeholder="Ask a question about this problem..."
+            value={input}
+            disabled={isStreaming}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button
+            className={`absolute right-2 p-2 rounded-full transition-all duration-200
+              ${input.trim() 
+                ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-500/20" 
+                : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+              }`}
+            disabled={!input.trim() || isStreaming}
+            onClick={sendMessage}
+          >
+            <Send size={16} className={input.trim() ? "ml-0.5" : ""} />
+          </button>
+        </div>
+        <div className="text-center mt-2">
+           <p className="text-[10px] text-zinc-600">
+             AI can make mistakes. Verify code before submitting.
+           </p>
+        </div>
       </div>
     </div>
   );

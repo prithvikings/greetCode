@@ -1,73 +1,228 @@
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod'; // or 'zod/v4'
-import {useDispatch,useSelector} from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../authSlice';
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../authSlice";
+import { Loader2, Command } from "lucide-react";
+import { Button } from "../components/ui/button";
 
-
-// Define the Zod schema for form validation
+// Define the Zod schema
 const signupschema = z.object({
-  name: z.string().min(3, { message: "Name is required" }).max(50, { message: "Name is too long" }),
-  email: z.string().email({ message: "Invalid email address" }).nonempty({ message: "Email is required" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters long" }).nonempty({ message: "Password is required" }),
+  name: z
+    .string()
+    .min(3, { message: "Name is required" })
+    .max(50, { message: "Name is too long" }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .nonempty({ message: "Email is required" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" })
+    .nonempty({ message: "Password is required" }),
 });
 
-
 const SignupPage = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {isAuthenticated,loading} = useSelector((state) => state.auth);
+  const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
-  // Initialize the form with React Hook Form and Zod resolver
-  const {register,handleSubmit,formState: { errors },} = useForm({resolver: zodResolver(signupschema),});
+  // Initialize form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupschema),
+  });
 
-
-  useEffect(()=>{
-    if(isAuthenticated){
-      navigate('/');
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
     }
   }, [isAuthenticated, navigate]);
 
   const onSubmit = (data) => {
     dispatch(registerUser(data));
-  }
-
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='w-full h-screen flex  justify-center items-center p-4'>
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 p-4 lg:p-8">
+      {/* Background Decoration (Optional - gives that "Startup" feel) */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-zinc-950 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] dark:bg-[linear-gradient(to_right,#18181b_1px,transparent_1px),linear-gradient(to_bottom,#18181b_1px,transparent_1px)]"></div>
 
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 space-y-2 shadow-lg h-fixed">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px] z-10">
+        {/* Header Section */}
+        <div className="flex flex-col space-y-2 text-center">
+          <div className="flex justify-center mb-2">
+            <div className="bg-zinc-900 dark:bg-white p-2 rounded-lg">
+              <Command className="w-6 h-6 text-white dark:text-black" />
+            </div>
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Create an account
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 font-inter">
+            Enter your details below to create your account
+          </p>
+        </div>
 
-        <legend className="fieldset-legend text-2xl">Signup</legend>
+        {/* Form Section */}
+        <div className="grid gap-6">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4">
+              {/* Name Field */}
+              <div className="grid gap-1">
+                <label
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-100"
+                  htmlFor="name"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  placeholder="John Doe"
+                  type="text"
+                  autoCapitalize="none"
+                  autoComplete="none"
+                  autoCorrect="off"
+                  disabled={loading}
+                  {...register("name")}
+                  className={`flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300 ${
+                    errors.name
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-zinc-200"
+                  }`}
+                />
+                {errors.name && (
+                  <p className="text-xs text-red-500 font-medium mt-1 animate-in slide-in-from-top-1 fade-in-0">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
 
-        <label className="label">Name</label>
-        <input type="text" className="input outline-none  w-full" placeholder="Name" {...register("name")}/>
-        {errors.name && <p className="text-error font-medium tracking-wide">{errors.name.message}</p>}
+              {/* Email Field */}
+              <div className="grid gap-1">
+                <label
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-100"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  placeholder="name@example.com"
+                  type="email"
+                  autoCapitalize="none"
+                  autoComplete="none"
+                  autoCorrect="off"
+                  disabled={loading}
+                  {...register("email")}
+                  className={`flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300 ${
+                    errors.email
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-zinc-200"
+                  }`}
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-500 font-medium mt-1 animate-in slide-in-from-top-1 fade-in-0">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
 
+              {/* Password Field */}
+              <div className="grid gap-1">
+                <label
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-900 dark:text-zinc-100"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+                <input
+                  id="password"
+                  placeholder="••••••••"
+                  type="password"
+                  autoCapitalize="none"
+                  autoComplete="none"
+                  disabled={loading}
+                  {...register("password")}
+                  className={`flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300 ${
+                    errors.password
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-zinc-200"
+                  }`}
+                />
+                {errors.password && (
+                  <p className="text-xs text-red-500 font-medium mt-1 animate-in slide-in-from-top-1 fade-in-0">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
 
-        <label className="label">Email</label>
-        <input type="email" className="input outline-none  w-full"  placeholder="Email" {...register("email")}/>
-        {errors.email && <p className="text-error font-medium tracking-wide">{errors.email.message}</p>}
+              {/* Submit Button */}
 
+              <Button
+                variant="default"
+                disabled={loading}
+                type="submit"
+                className="
+    font-inter corner-squircel px-4 py-1
+    bg-sky-500 hover:bg-sky-600
+    cursor-pointer text-white
+    [text-shadow:0_1px_1px_rgba(0,0,0,0.25)]
+    shadow-[inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-2px_0_rgba(0,0,0,0.15)]
+    hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),inset_0_-2px_0_rgba(0,0,0,0.25)]
+    active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.35)]
+    active:translate-y-[1px]
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-sky-400/60
+    focus-visible:ring-offset-2
+    focus-visible:ring-offset-transparent
+    transition-all duration-200
+  "
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  "Sign Up with Email"
+                )}
+              </Button>
+            </div>
+          </form>
 
-        <label className="label">Password</label>
-        <input type="password" className="input outline-none  w-full" placeholder="Password" {...register("password")}/>
-        {errors.password && <p className="text-error font-medium tracking-wide">{errors.password.message}</p>}
+          {/* Footer Link */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-950 dark:text-zinc-400 font-poppins">
+                Or continue with
+              </span>
+            </div>
+          </div>
 
-        <p className='text-center font-normal text-sm text-base-content'>if you already have an account <Link to="/login" className="text-secondary font-semibold ">Login Now </Link></p>
+          <p className="px-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="underline underline-offset-4 hover:text-zinc-900 dark:hover:text-zinc-50 font-medium font-poppins"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
 
-        <button
-        disabled={loading}
-        type="submit" className={`btn btn-secondary ${loading ? "loading":""} mt-4 shadow-xl`}>{loading? "Signing up...":"Sign Up"}</button>
-      </fieldset>
-    </form>
-    
-  )
-}
+      </div>
+    </div>
+  );
+};
 
-export default SignupPage
-
+export default SignupPage;
