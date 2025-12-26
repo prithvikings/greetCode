@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, getUserProfile, LogoutUser,registerAdmin,deleteUser,check } from '../controllers/auth.controllers.js';
+import { registerUser, loginUser, getUserProfile, LogoutUser,registerAdmin,deleteUser,check,updateUserProfile } from '../controllers/auth.controllers.js';
 import { checkAuth } from '../middlewares/auth.middleware.js';
 import {checkAdmin} from "../middlewares/admin.middleware.js";
 export const userRoutes = express.Router();
@@ -10,6 +10,7 @@ userRoutes.post("/login",loginUser);
 userRoutes.get("/profile",checkAuth ,getUserProfile);
 userRoutes.post("/logout",checkAuth,LogoutUser);
 userRoutes.post("/deleteProfile",checkAuth,deleteUser);
+userRoutes.put("/update", checkAuth, updateUserProfile);
 
 userRoutes.post("/admin/register",checkAdmin,registerAdmin);
 

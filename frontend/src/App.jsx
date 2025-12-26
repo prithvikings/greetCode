@@ -19,6 +19,7 @@ import LandingHero from "./Landing/LandingHero";
 import Discuss from "./pages/Discuss.jsx";
 import DiscussPost from "./pages/DiscussPost.jsx";
 import DiscussCreate from "./pages/DiscussCreate.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 const App = () => {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -59,6 +60,10 @@ const App = () => {
         element={isAuthenticated ? <Navigate to="/home" /> : <LoginPage />}
       />
       <Route path="/problem/:problemid" element={<ProblemPage />} />
+      <Route 
+        path="/profile" 
+        element={isAuthenticated ? <UserProfile /> : <Navigate to="/login" />} 
+      />
       <Route
         path="/admin"
         element={

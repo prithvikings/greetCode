@@ -268,3 +268,47 @@ export const check = async (req, res) => {
     });
   }
 };
+
+// Update User Profile ✅
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { firstname, lastname } = req.body;
+
+    // 1. Validate input (Basic)
+    if (!firstname && !lastname) {
+      return res.status(400).json({ message: "At least one field is required to update" });
+    }
+
+    // 2. Find and Update
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (firstname) user.firstname = firstname;
+    if (lastname) user.lastname = lastname;
+
+    await user.save();
+
+    // 3. Response (Exclude password)
+    const updatedUser = {
+      _id: user._id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      role: user.role,
+    };
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("UPDATE ERROR:", error);
+    res.status(500).json({
+      message: "Error updating profile",
+      error: error.message,
+    });
+  }
+};
