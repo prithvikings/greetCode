@@ -189,11 +189,69 @@ export default function ProblemPage() {
     consoleHeader: "bg-zinc-50"
   };
 
-  if (loading && !problem) return (
-    <div className={`min-h-screen ${colors.bg} flex items-center justify-center`}>
-      <span className="loading loading-spinner loading-lg text-primary"></span>
+  // --- SKELETON UI COMPONENT ---
+  const ProblemSkeleton = () => (
+    <div className={`h-screen w-full ${colors.bg} flex flex-col overflow-hidden animate-pulse`}>
+      {/* Header Skeleton */}
+      <header className={`h-14 shrink-0 border-b ${colors.border} ${colors.headerBg} flex items-center px-4 justify-between`}>
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-md ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+          <div className="flex flex-col gap-2">
+             <div className={`w-48 h-5 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+           <div className={`w-24 h-8 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+           <div className={`w-20 h-8 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+           <div className={`w-20 h-8 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+        </div>
+      </header>
+
+      {/* Main Content Skeleton */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Panel Skeleton */}
+        <div className={`w-1/2 flex flex-col border-r ${colors.border} min-w-[400px]`}>
+          <div className={`flex h-12 border-b ${colors.border} px-2 items-center gap-4`}>
+             {[1,2,3,4,5].map(i => (
+                <div key={i} className={`w-20 h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             ))}
+          </div>
+          <div className="p-6 space-y-4">
+             <div className={`w-3/4 h-6 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             <div className={`w-full h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             <div className={`w-full h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             <div className={`w-5/6 h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             <div className="pt-8 space-y-2">
+                <div className={`w-32 h-5 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+                <div className={`w-full h-24 rounded-lg ${isDarkMode ? 'bg-zinc-900' : 'bg-zinc-100'}`}></div>
+             </div>
+          </div>
+        </div>
+
+        {/* Right Panel Skeleton */}
+        <div className="w-1/2 flex flex-col">
+          <div className={`h-9 border-b ${colors.border} flex items-center px-4`}>
+             <div className={`w-32 h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+          </div>
+          <div className="flex-1 p-4">
+             {/* Fake Code Lines */}
+             <div className="space-y-3">
+               {[...Array(10)].map((_, i) => (
+                  <div key={i} className={`h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`} style={{width: `${Math.random() * 40 + 30}%`}}></div>
+               ))}
+             </div>
+          </div>
+          <div className={`h-1/3 border-t ${colors.border}`}>
+             <div className={`h-9 border-b ${colors.border} flex items-center px-4`}>
+               <div className={`w-24 h-4 rounded ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
+             </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
+
+  if (loading && !problem) return <ProblemSkeleton />;
 
   const TabButton = ({ id, label, icon: Icon }) => (
     <button
@@ -229,7 +287,7 @@ export default function ProblemPage() {
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate(-1)} 
-            className={`p-1.5 rounded-md transition-colors ${isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-600'}`}
+            className={`cursor-pointer p-1.5 rounded-md transition-colors ${isDarkMode ? 'hover:bg-zinc-800 text-zinc-400' : 'hover:bg-zinc-100 text-zinc-600'}`}
           >
             <ChevronLeft size={20} />
           </button>
@@ -249,10 +307,10 @@ export default function ProblemPage() {
         <div className="flex items-center gap-3">
            {/* THEME TOGGLE BUTTON */}
            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`cursor-pointer p-2 rounded-md transition-colors ${isDarkMode ? 'bg-zinc-800 hover:bg-zinc-700 text-yellow-400' : 'bg-zinc-100 hover:bg-zinc-200 text-indigo-500'}`}
+             onClick={() => setIsDarkMode(!isDarkMode)}
+             className={`cursor-pointer p-2 rounded-md transition-colors ${isDarkMode ? 'bg-zinc-800 hover:bg-zinc-700 text-yellow-400' : 'bg-zinc-100 hover:bg-zinc-200 text-indigo-500'}`}
            >
-              {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
+             {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
            </button>
            <div className={`h-4 w-[1px] ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}></div>
 
@@ -271,7 +329,7 @@ export default function ProblemPage() {
                }
              }}
              className={`text-xs rounded px-2 py-1.5 outline-none border cursor-pointer
-                ${isDarkMode ? 'bg-zinc-900 border-zinc-700 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}
+               ${isDarkMode ? 'bg-zinc-900 border-zinc-700 text-zinc-300' : 'bg-white border-zinc-200 text-zinc-700'}`}
            >
              {languageOptions.map(opt => (
                <option key={opt.id} value={opt.id}>{opt.label}</option>
@@ -339,9 +397,9 @@ export default function ProblemPage() {
                         <div className={`p-2 rounded ${isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-white text-zinc-700 border border-zinc-200'}`}>{t.output}</div>
                       </div>
                       {t.explanation && (
-                         <div className={`text-xs italic mt-2 border-l-2 pl-3 ${isDarkMode ? 'border-zinc-700 text-zinc-400' : 'border-zinc-300 text-zinc-500'}`}>
-                           {t.explanation}
-                         </div>
+                          <div className={`text-xs italic mt-2 border-l-2 pl-3 ${isDarkMode ? 'border-zinc-700 text-zinc-400' : 'border-zinc-300 text-zinc-500'}`}>
+                            {t.explanation}
+                          </div>
                       )}
                     </div>
                   </div>
@@ -364,9 +422,9 @@ export default function ProblemPage() {
             {activeLeftTab === "Editorial" && (
                <div className="h-full">
                  <Editorial 
-                    secureUrl={problem.secureUrl}
-                    thumbnailUrl={problem.thumbnailUrl}
-                    duration={problem.duration}
+                   secureUrl={problem.secureUrl}
+                   thumbnailUrl={problem.thumbnailUrl}
+                   duration={problem.duration}
                  />
                </div>
             )}
@@ -471,10 +529,10 @@ export default function ProblemPage() {
               )}
 
               {loading && (
-                 <div className="h-full flex items-center justify-center gap-3 opacity-60">
-                   <span className="loading loading-spinner loading-sm"></span>
-                   Running code...
-                 </div>
+                  <div className="h-full flex items-center justify-center gap-3 opacity-60">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Running code...
+                  </div>
               )}
 
               {runResult && (
@@ -505,7 +563,7 @@ export default function ProblemPage() {
                                    <div>
                                       <span className="opacity-50 text-xs block mb-1">Expected</span>
                                       <div className={`p-2 rounded ${isDarkMode ? 'bg-zinc-950 text-zinc-400' : 'bg-white text-gray-800 border border-zinc-200'}`}>
-                                        {r.expected_output}
+                                         {r.expected_output}
                                       </div>
                                    </div>
                                  )}

@@ -128,7 +128,7 @@ const AdminUpdate = () => {
 
                   {/* Right Side: Action Button */}
                   <button
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-amber-500/20 hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 dark:hover:text-white font-medium transition-all duration-200 shadow-sm hover:shadow-amber-500/20"
+                    className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-200 dark:border-amber-500/20 hover:bg-amber-500 hover:text-white dark:hover:bg-amber-500 dark:hover:text-white font-medium transition-all duration-200 shadow-sm hover:shadow-amber-500/20"
                     onClick={() => navigate(`/admin/update/${problem._id}`)}
                   >
                     <Pencil size={16} /> 

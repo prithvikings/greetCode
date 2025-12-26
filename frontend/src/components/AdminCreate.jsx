@@ -146,7 +146,7 @@ function AdminCreate() {
         </div>
         <button 
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition-all text-sm font-medium text-zinc-300"
+          className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 transition-all text-sm font-medium text-zinc-300"
         >
           <ArrowLeft className="w-4 h-4" /> Go Back
         </button>
@@ -403,7 +403,7 @@ function AdminCreate() {
         <div className="sticky bottom-6 flex justify-end">
             <button 
                 type="submit" 
-                className="btn border-none shadow-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all transform hover:scale-105"
+                className="btn cursor-pointer border-none shadow-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all transform hover:scale-105"
             >
                 <Save className="w-5 h-5" />
                 Create Problem

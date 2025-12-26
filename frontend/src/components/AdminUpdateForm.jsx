@@ -143,7 +143,7 @@ const AdminUpdateForm = () => {
             <Togglebtn />
             <button 
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm"
+            className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm"
             >
             <ArrowLeft className="w-4 h-4" /> Cancel & Back
             </button>
@@ -300,7 +300,7 @@ const AdminUpdateForm = () => {
         <div className="flex justify-end pt-4 pb-12">
             <button 
                 onClick={handleUpdate}
-                className="btn border-none shadow-xl bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all transform hover:scale-105"
+                className="btn cursor-pointer border-none shadow-xl bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all transform hover:scale-105"
             >
                 <Save className="w-5 h-5" />
                 Save Changes

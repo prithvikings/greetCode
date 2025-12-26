@@ -10,7 +10,6 @@ import {
   Circle, 
   Filter, 
   LogOut, 
-  User, 
   LayoutDashboard, 
   Sparkles,
   ChevronDown
@@ -21,37 +20,44 @@ function HomePage() {
   const { user } = useSelector((state) => state.auth);
   const [problems, setProblems] = useState([]);
   const [solvedProblems, setSolvedProblems] = useState([]);
-  const [isProfileOpen, setIsProfileOpen] = useState(false); // For custom dropdown
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  
+  // LOGIC ADDITION: Necessary for skeleton loading state
+  const [isLoading, setIsLoading] = useState(true);
+
   const [filter, setFilter] = useState({
     difficulty: "all",
     tag: "all",
     status: "all",
-    search: "", // Added search to state
+    search: "",
   });
 
   useEffect(() => {
-    const fetchProblems = async () => {
+    const fetchData = async () => {
+      setIsLoading(true); // Start loading
       try {
-        const { data } = await axiosClient.get("/api/auth/problem/getAllProblem");
-        setProblems(data);
+        // Run fetches in parallel for better performance
+        const [problemsRes, solvedRes] = await Promise.allSettled([
+          axiosClient.get("/api/auth/problem/getAllProblem"),
+          user ? axiosClient.get(`/api/auth/problem/problemSolvedByUser`) : Promise.resolve({ data: { solvedProblems: [] } })
+        ]);
+
+        if (problemsRes.status === "fulfilled") {
+          setProblems(problemsRes.value.data);
+        }
+        
+        if (solvedRes.status === "fulfilled" && solvedRes.value.data) {
+          setSolvedProblems(solvedRes.value.data.solvedProblems || []);
+        }
+
       } catch (error) {
-        console.error("Error fetching problems:", error);
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false); // Stop loading regardless of success/fail
       }
     };
 
-    const fetchSolvedProblems = async () => {
-      try {
-        const { data } = await axiosClient.get(`/api/auth/problem/problemSolvedByUser`);
-        setSolvedProblems(data.solvedProblems || []);
-      } catch (error) {
-        console.error("Error fetching solved problems:", error);
-      }
-    };
-
-    fetchProblems();
-    if (user) {
-      fetchSolvedProblems();
-    }
+    fetchData();
   }, [user]);
 
   const handleLogout = () => {
@@ -74,7 +80,6 @@ function HomePage() {
     return matchesDifficulty && matchesTag && matchesStatus && matchesSearch;
   });
 
-  // Helper for Difficulty Styles
   const getDifficultyStyle = (difficulty) => {
     switch (difficulty) {
       case "Easy": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
@@ -83,6 +88,27 @@ function HomePage() {
       default: return "bg-zinc-500/10 text-zinc-500 border-zinc-500/20";
     }
   };
+
+  // Skeleton Row Component to keep main return clean
+  const SkeletonRow = () => (
+    <tr className="animate-pulse border-b border-zinc-100 dark:border-zinc-800/50">
+      <td className="px-6 py-4">
+        <div className="h-5 w-5 rounded-full bg-zinc-200 dark:bg-zinc-800"></div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="h-4 w-48 rounded bg-zinc-200 dark:bg-zinc-800"></div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="h-5 w-16 rounded-full bg-zinc-200 dark:bg-zinc-800"></div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="h-5 w-12 rounded bg-zinc-200 dark:bg-zinc-800"></div>
+      </td>
+      <td className="px-6 py-4 text-right">
+        <div className="ml-auto h-4 w-12 rounded bg-zinc-200 dark:bg-zinc-800"></div>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 font-inter selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-zinc-900">
@@ -114,7 +140,7 @@ function HomePage() {
               <Sparkles className="w-3.5 h-3.5 text-indigo-500 group-hover:scale-110 transition-transform" />
               <span>Ask AI</span>
             </button>
-<Togglebtn />
+            <Togglebtn />
             {/* Profile Dropdown */}
             <div className="relative">
               <button 
@@ -241,7 +267,10 @@ function HomePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                {filterProblems.length > 0 ? (
+                {isLoading ? (
+                  // Render 8 skeleton rows while loading
+                  [...Array(8)].map((_, i) => <SkeletonRow key={i} />)
+                ) : filterProblems.length > 0 ? (
                   filterProblems.map((problem, index) => {
                     const isSolved = solvedProblems.some((sp) => sp._id === problem._id);
                     return (

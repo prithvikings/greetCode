@@ -87,7 +87,7 @@ const AdminDelete = () => {
               <Togglebtn />
               <NavLink 
                 to="/admin" 
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm group"
+                className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm group"
               >
                 <ArrowLeft className="w-4 h-4 text-gray-500 dark:text-zinc-400 group-hover:-translate-x-1 transition-transform" /> 
                 Back to Dashboard
@@ -143,7 +143,7 @@ const AdminDelete = () => {
 
                 {/* Right: Delete Button */}
                 <button
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-950 text-rose-600 dark:text-rose-500 border border-gray-200 dark:border-zinc-800 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white hover:border-rose-600 dark:hover:border-rose-600 font-medium transition-all duration-200 shadow-sm"
+                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-950 text-rose-600 dark:text-rose-500 border border-gray-200 dark:border-zinc-800 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white hover:border-rose-600 dark:hover:border-rose-600 font-medium transition-all duration-200 shadow-sm"
                   onClick={() => setSelectedProblem(problem)}
                 >
                   <Trash2 size={16} />
@@ -183,13 +183,13 @@ const AdminDelete = () => {
 
                 <div className="flex gap-3 w-full">
                   <button
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200 font-medium transition-colors border border-gray-200 dark:border-zinc-700"
+                    className="cursor-pointer flex-1 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-200 font-medium transition-colors border border-gray-200 dark:border-zinc-700"
                     onClick={() => setSelectedProblem(null)}
                   >
                     Cancel
                   </button>
                   <button
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-medium transition-colors shadow-lg shadow-rose-900/20"
+                    className="cursor-pointer flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-medium transition-colors shadow-lg shadow-rose-900/20"
                     onClick={handleDelete}
                     disabled={loading}
                   >

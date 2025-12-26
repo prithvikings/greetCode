@@ -104,7 +104,7 @@ const AdminVideo = () => {
               <Togglebtn />
               <NavLink 
                 to="/admin" 
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm group"
+                className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all text-sm font-medium text-gray-700 dark:text-zinc-300 shadow-sm group"
               >
                 <ArrowLeft className="w-4 h-4 text-gray-500 dark:text-zinc-400 group-hover:-translate-x-1 transition-transform" /> 
                 Back to Dashboard
@@ -187,7 +187,7 @@ const AdminVideo = () => {
                   
                   <button 
                     onClick={() => handleDelete(problem._id)}
-                    className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-500 hover:border-rose-200 dark:hover:border-rose-500/20 transition-all text-xs font-medium"
+                    className="flex cursor-pointer items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-500 hover:border-rose-200 dark:hover:border-rose-500/20 transition-all text-xs font-medium"
                     title="Delete Video"
                   >
                     <Trash2 className="w-4 h-4" />

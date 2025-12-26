@@ -125,8 +125,8 @@ const Admin = () => {
             <div className="flex items-center gap-4">
                 <Togglebtn />
                 <NavLink 
-                to="/" 
-                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all duration-200 group shadow-sm"
+                to="/home" 
+                className="cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white dark:bg-zinc-900 hover:bg-gray-100 dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all duration-200 group shadow-sm"
                 >
                 <ArrowLeft className="w-4 h-4 text-gray-500 dark:text-zinc-400 group-hover:-translate-x-1 transition-transform" />
                 <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">Back to Home</span>
@@ -152,7 +152,7 @@ const Admin = () => {
               </div>
               <button
                 onClick={() => navigate(item.route)}
-                className="w-full py-2.5 px-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-900 dark:text-zinc-200 text-sm font-medium transition-colors border border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 flex items-center justify-center gap-2"
+                className="cursor-pointer w-full py-2.5 px-4 rounded-lg bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-900 dark:text-zinc-200 text-sm font-medium transition-colors border border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 flex items-center justify-center gap-2"
               >
                 {item.button}
               </button>
